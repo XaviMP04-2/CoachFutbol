@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ejercicios de Fútbol</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>Menú</h2>
+      <nav>
+        <ul>
+          <li><a href="listaEjercicios.html" class="active">Lista de Ejercicios</a></li>
+          <li><a href="crear.html">Crear ejercicio</a></li>
+          <li><a href="#">Estadísticas</a></li>
+          <li><a href="#">Ayuda</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main>
+      <header class="topbar">
+        <div class="topbar-content">
+          <h1>Ejercicios de Fútbol</h1>
+          <button class="logout">Logout</button>
+        </div>
+      </header>
+
+      <section class="contenido">
+        <h2>Filtrar ejercicios</h2>
+        <div id="filtros">
+          <label for="tipo">Tipo:</label>
+          <select id="filtro-tipo">
+            <option value="">Todos</option>
+            <option value="técnico">Técnico</option>
+            <option value="táctico">Táctico</option>
+            <option value="físico">Físico</option>
+          </select>
+
+          <label for="dificultad">Dificultad:</label>
+          <select id="filtro-dificultad">
+            <option value="">Todas</option>
+            <option value="Fácil">Fácil</option>
+            <option value="Media">Media</option>
+            <option value="Difícil">Difícil</option>
+          </select>
+
+          <label for="edad">Edad recomendada:</label>
+          <input type="text" id="filtro-edad" placeholder="ej: U14, 13, U16..." />
+          <label for="filtro-jugadores">Mínimo jugadores:</label>
+          <input type="number" id="filtro-jugadores" placeholder="ej: 6" />
+
+          <button id="aplicar-filtros">Aplicar filtros</button>
+        </div>
+        
+        <section class="grid-2x2">
+        <div id="lista-ejercicios"></div>
+        </section>
+      </section>
+    </main>
+  </div>
+  
+  <script src="js/listaEjercicios.js"></script>
+</body>
+</html>
