@@ -2,28 +2,13 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d', { willReadFrequently: true });
 
 const dpr = window.devicePixelRatio || 1;
-const displayWidth = 1500;
-const displayHeight = 675;
-
-canvas.style.width = `${displayWidth}px`;
-canvas.style.height = `${displayHeight}px`;
-canvas.width = displayWidth * dpr;
-canvas.height = displayHeight * dpr;
-ctx.scale(dpr, dpr);
 ctx.imageSmoothingEnabled = true;
 
-// Fondo del campo
-let background = new Image();
-const tipoCampo = "campo";
-function setBackground(tipo) {
-  background.src = `img/${tipo}.png`;
-  background.onload = () => {
-    dibujarTodo();
-    actualizarMiniatura();
-  };
-}
-setBackground(tipoCampo);
+// Función para redimensionar el canvas
+// Función para redimensionar el canvas
 
+//ctx.scale(dpr, dpr);
+//ctx.imageSmoothingEnabled = true;
 // Elementos del campo (objetos y textos)
 let elementos = [];
 let currentDragged = null;
@@ -33,6 +18,43 @@ let offsetY = 0;
 let arrastrando = false;
 let mouseDown = false;
 const btnEliminar = document.getElementById('eliminar-objeto');
+
+// Fondo del campo
+let background = new Image();
+const tipoCampo = "campo";
+function setBackground(tipo) {
+  background.src = `img/${tipo}.png`;
+  background.onload = () => {
+    resizeCanvas(); // Redimensiona el canvas al cargar el fondo
+    dibujarTodo();
+    actualizarMiniatura();
+  };
+}
+setBackground(tipoCampo);
+
+function resizeCanvas() {
+    const displayWidth = canvas.clientWidth;
+    const displayHeight = canvas.clientHeight;
+
+    canvas.width = displayWidth * dpr;
+    canvas.height = displayHeight * dpr;
+
+    // ¡IMPORTANTE! Restablece la matriz de transformación del contexto antes de aplicar la escala.
+    // Esto evita la acumulación de escalas.
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    // Volver a dibujar todo el contenido para que se adapte al nuevo tamaño
+    dibujarTodo();
+    actualizarMiniatura();
+}
+
+// Llama a resizeCanvas inicialmente para establecer el tamaño correcto al cargar
+//resizeCanvas();
+
+// Añade un event listener para que el canvas se redimensione cada vez que la ventana cambie de tamaño
+//window.addEventListener('resize', resizeCanvas);
+
+
 
 // Arrastrar imágenes
 document.querySelectorAll('.tools img').forEach(img => {
@@ -401,7 +423,15 @@ function cerrarPizarra() {
 }
 
 document.querySelector('.miniatura-campo').addEventListener('click', () => {
-  document.getElementById('canvas-container').style.display = 'flex';
-  flechas.forEach(f => f.show());
+  const container = document.getElementById('canvas-container');
+  container.style.display = 'flex';
+
+  // Esperar al próximo frame para asegurar que el canvas tiene tamaño visible
+  requestAnimationFrame(() => {
+    resizeCanvas();      // ← ahora funciona porque el canvas es visible
+    dibujarTodo();
+    flechas.forEach(f => f.show());
+  });
 });
+
 

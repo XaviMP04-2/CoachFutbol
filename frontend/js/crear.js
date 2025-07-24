@@ -6,7 +6,7 @@ document.getElementById('form-ejercicio').addEventListener('submit', async (e) =
   const titulo = document.getElementById('titulo').value;
   const descripcion = document.getElementById('descripcion').value;
   const tipo = document.getElementById('tipo').value;
-  const campo = document.getElementById('campo').value;
+  //const campo = document.getElementById('campo').value;
   const autor = document.getElementById('autor').value;
   const objetivos = document.getElementById('objetivos').value.split(',').map(e => e.trim());
   const edadRecomendada = document.getElementById('edadRecomendada').value;
@@ -17,7 +17,7 @@ document.getElementById('form-ejercicio').addEventListener('submit', async (e) =
 
   const datos = {
     titulo,
-    descripcion: `(${campo}) ${descripcion}`, // añadimos el campo como parte de la descripción
+    descripcion,
     tipo,
     objetivos,
     edadRecomendada,
