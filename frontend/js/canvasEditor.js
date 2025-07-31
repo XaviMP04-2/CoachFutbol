@@ -32,6 +32,8 @@ function setBackground(tipo) {
 }
 setBackground(tipoCampo);
 
+
+/*
 function resizeCanvas() {
     const displayWidth = canvas.clientWidth;
     const displayHeight = canvas.clientHeight;
@@ -46,13 +48,40 @@ function resizeCanvas() {
     // Volver a dibujar todo el contenido para que se adapte al nuevo tamaño
     dibujarTodo();
     actualizarMiniatura();
+}*/
+function resizeCanvas() {
+  const container = document.getElementById("canvas-container");
+
+  // Tamaño interno del contenedor con padding descontado
+  const style = getComputedStyle(container);
+  const paddingX = 100;
+  const paddingY = 210;
+  console.log(`Padding X: ${paddingX}, Padding Y: ${paddingY}`);
+
+  const availableWidth = container.clientWidth - paddingX;
+  const availableHeight = container.clientHeight - paddingY;
+
+  canvas.width = availableWidth * dpr;
+  canvas.height = availableHeight * dpr;
+
+  canvas.style.width = `${availableWidth}px`;
+  canvas.style.height = `${availableHeight}px`;
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  dibujarTodo();
+  actualizarMiniatura();
 }
+
 
 // Llama a resizeCanvas inicialmente para establecer el tamaño correcto al cargar
 //resizeCanvas();
 
 // Añade un event listener para que el canvas se redimensione cada vez que la ventana cambie de tamaño
-//window.addEventListener('resize', resizeCanvas);
+window.addEventListener('resize', () => {
+  resizeCanvas();
+  dibujarTodo(); // ⚠️ forzamos redibujar el fondo adaptado
+});
+
 
 
 
@@ -113,6 +142,8 @@ document.getElementById('add-text-btn').addEventListener('click', () => {
 
 function dibujarTodo() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  
   ctx.drawImage(background, 0, 0, canvas.width / dpr, canvas.height / dpr);
 
   elementos.forEach(el => {

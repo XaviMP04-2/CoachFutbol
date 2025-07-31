@@ -414,16 +414,17 @@ main {
 
 #canvas-container canvas {
   background: white;
-  border-radius: var(--border-radius-md);
-  box-shadow: 0 0 0.625rem var(--shadow-dark);
+  border-radius: var(--border-radius-md); /* 10px */
+  box-shadow: 0 0 0.625rem var(--shadow-dark); /* 10px */
   image-rendering: auto;
-  width: 100%;
-  height: auto;
-  max-width: 95vw; /* deja margen horizontal */
-  max-height: 85vh; /* deja margen vertical */
-  object-fit: contain;
-}
+  max-width: 100vw; /* Aumentado de 90vw a 95vw */
+  max-height: 100vh; /* Aumentado de 80vh a 90vh */
+  width: 100%; /* Modificado: Ahora ocupa el 100% del contenedor */
+  height: 100%; /* Modificado: Ahora ocupa el 100% del contenedor */
+  object-fit: contain; /* Para que la imagen se ajuste sin recortarse, manteniendo la proporción */
+  display: block;
 
+}
 
 .canvas-buttons-modern {
   display: flex;
