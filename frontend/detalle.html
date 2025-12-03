@@ -1,15 +1,57 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Detalle del Ejercicio</title>
-  <link rel="stylesheet" href="css/styles.css" />
-</head>
-<body>
-  <h1>Detalle del Ejercicio</h1>
-  <div id="detalle-ejercicio"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- ICONOS Y COLOR DEL NAVEGADOR -->
+    <link
+      rel="icon"
+      type="image/png"
+      href="img/favicon-proyecto.png"
+      sizes="32x32"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="img/favicon-proyecto-192.png"
+      sizes="192x192"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="img/favicon-proyecto-180.png"
+      sizes="180x180"
+    />
+    <meta name="theme-color" content="#0f331b" />
+    <title>Detalle del Ejercicio</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <!-- TOPBAR GLOBAL -->
+    <header class="topnav">
+      <div class="topnav-left">
+        <a class="app-logo" href="listaEjercicios.html"
+          ><img src="img/favicon-proyecto.png"" alt="Logo CoachFutbol" />
+          <span>COACHFUTBOL</span></a
+        >
+      </div>
+      <nav class="topnav-center">
+        <ul>
+          <li><a href="listaEjercicios.html">Lista de Ejercicios</a></li>
+          <li><a href="crear.html">Crear ejercicio</a></li>
+          <li><a href="#">Mi Espacio</a></li>
+          <li><a href="#">Ayuda</a></li>
+        </ul>
+      </nav>
+      <div class="topnav-right">
+        <button class="profile-btn" title="Perfil"></button>
+      </div>
+    </header>
 
-  <script src="js/detalle.js"></script>
-</body>
+    <main class="content-main" style="padding: 1.5rem">
+      <h1 class="page-title">Detalle del Ejercicio</h1>
+      <div id="detalle-ejercicio"></div>
+    </main>
+
+    <script src="js/detalle.js"></script>
+  </body>
 </html>

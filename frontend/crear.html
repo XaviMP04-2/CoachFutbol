@@ -1,43 +1,80 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Crear Ejercicio</title>
-  <link rel="stylesheet" href="css/styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/leader-line@1.0.7/leader-line.min.js"></script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- ICONOS Y COLOR DEL NAVEGADOR -->
+    <link
+      rel="icon"
+      type="image/png"
+      href="img/favicon-proyecto.png"
+      sizes="32x32"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="img/favicon-proyecto-192.png"
+      sizes="192x192"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="img/favicon-proyecto-180.png"
+      sizes="180x180"
+    />
+    <meta name="theme-color" content="#0f331b" />
 
-</head>
-<body>
-  <div class="layout">
-    <aside class="sidebar">
-      <h2>Menú</h2>
-      <nav>
+    <title>Crear Ejercicio</title>
+    <link rel="stylesheet" href="css/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/leader-line@1.0.7/leader-line.min.js"></script>
+  </head>
+  <body>
+    <!-- TOPBAR GLOBAL -->
+    <header class="topnav">
+      <div class="topnav-left">
+        <a class="app-logo" href="listaEjercicios.html">
+          <img src="img/favicon-proyecto.png" alt="Logo CoachFutbol" />
+          <span>COACHFUTBOL</span>
+        </a>
+      </div>
+      <nav class="topnav-center">
         <ul>
           <li><a href="listaEjercicios.html">Lista de Ejercicios</a></li>
           <li><a href="crear.html" class="active">Crear ejercicio</a></li>
-          <li><a href="#">Estadísticas</a></li>
+          <li><a href="#">Mi Espacio</a></li>
           <li><a href="#">Ayuda</a></li>
         </ul>
       </nav>
-    </aside>
+      <div class="topnav-right">
+        <button class="profile-btn" title="Perfil"></button>
+      </div>
+    </header>
 
-    <main>
-      <header class="topbar">
-        <div class="topbar-content">
-          <h1>Crear nuevo ejercicio</h1>
-          <button class="logout">Logout</button>
-        </div>
-      </header>
+    <!-- CONTENIDO DE PÁGINA -->
+    <main class="content-main" style="padding: 1.5rem">
+      <!--<header class="page-header">
+      <h1 class="page-title">Crear nuevo ejercicio</h1> 
+    </header>-->
 
       <section class="contenido">
         <div class="crear-layout">
-          <form id="form-ejercicio" class="formulario">
+          <!-- FORMULARIO -->
+          <form id="form-ejercicio" class="formulario" autocomplete="off">
+            <!-- Grupo: Información básica -->
+            <h4 class="form-group-title">Información básica</h4>
+
             <label for="titulo">Título:</label>
             <input type="text" id="titulo" name="titulo" required />
 
             <label for="descripcion">Descripción:</label>
-            <textarea id="descripcion" name="descripcion" rows="3" required></textarea>
+            <textarea
+              id="descripcion"
+              name="descripcion"
+              rows="3"
+              required
+            ></textarea>
+
+            <!-- Grupo: Clasificación -->
+            <h4 class="form-group-title">Clasificación</h4>
 
             <label for="tipo">Tipo de ejercicio:</label>
             <select id="tipo" name="tipo" required>
@@ -46,20 +83,6 @@
               <option value="físico">Físico</option>
             </select>
 
-            <!--
-            <label for="campo">Tipo de campo:</label>
-            <select id="campo" name="campo" required>
-              <option value="campo completo">Campo completo</option>
-              <option value="medio campo">Medio campo</option>
-              <option value="zona lateral">Zona lateral</option>
-            </select>
--->
-            <label for="objetivos">Objetivos (separados por coma):</label>
-            <input type="text" id="objetivos" name="objetivos" />
-
-            <label for="edadRecomendada">Edad recomendada:</label>
-            <input type="text" id="edadRecomendada" name="edadRecomendada" />
-
             <label for="dificultad">Dificultad:</label>
             <select id="dificultad" name="dificultad">
               <option value="Fácil">Fácil</option>
@@ -67,28 +90,82 @@
               <option value="Difícil">Difícil</option>
             </select>
 
+            <label for="edadRecomendada">Edad recomendada:</label>
+            <input
+              type="text"
+              id="edadRecomendada"
+              name="edadRecomendada"
+              placeholder="ej: U14, 13, U16"
+            />
+
+            <!-- Grupo: Detalles -->
+            <h4 class="form-group-title">Detalles</h4>
+
+            <label for="objetivos">Objetivos (separados por coma):</label>
+            <input
+              type="text"
+              id="objetivos"
+              name="objetivos"
+              placeholder="ej: conducción, pase, finalización"
+            />
+            <!--<small class="hint">Escribe los objetivos separados por coma.</small> -->
+
             <label for="duracion">Duración:</label>
-            <input type="text" id="duracion" name="duracion" />
+            <input
+              type="text"
+              id="duracion"
+              name="duracion"
+              placeholder="ej: 15 min"
+            />
 
             <label for="material">Material necesario:</label>
-            <input type="text" id="material" name="material" />
+            <input
+              type="text"
+              id="material"
+              name="material"
+              placeholder="ej: conos, balones, picas"
+            />
+            <!-- <small class="hint">También separado por coma si hay varios.</small> -->
 
             <label for="numeroJugadores">Número de jugadores:</label>
-            <input type="number" id="numeroJugadores" name="numeroJugadores" />
+            <input
+              type="number"
+              id="numeroJugadores"
+              name="numeroJugadores"
+              min="1"
+              step="1"
+            />
 
-            <label for="autor">Nombre del autor:</label>
-            <input type="text" id="autor" name="autor" required />
+            <!-- Grupo: Autor -->
+            <!--
+          <h4 class="form-group-title">Autor</h4>
+
+          <label for="autor">Nombre del autor:</label>
+          <input type="text" id="autor" name="autor" required />
+          -->
 
             <input type="hidden" id="imagen-ejercicio" name="archivoUrl" />
             <button type="submit">Guardar ejercicio</button>
           </form>
 
-          <div class="miniatura-campo" onclick="document.getElementById('canvas-container').style.display='flex'">
-            <p style="text-align:center; font-weight:bold;">Haz clic para diseñar</p>
-            <canvas id="mini-canvas" width="450" height="300"></canvas>
-          </div>
+          <!-- TARJETA DE PREVISUALIZACIÓN -->
+          <aside class="preview-card">
+            <div class="preview-card__header">
+              <h3>Previsualización</h3>
+            </div>
+
+            <div class="miniatura-campo">
+              <!-- El tamaño real lo ajusta JS con syncMiniCanvasResolution() -->
+              <canvas id="mini-canvas"></canvas>
+            </div>
+
+            <p class="preview-hint">
+              La previsualización se actualiza al guardar desde la pizarra.
+            </p>
+          </aside>
         </div>
 
+        <!-- MODAL PIZARRA -->
         <div id="canvas-container">
           <canvas id="canvas" width="800" height="400"></canvas>
 
@@ -98,14 +175,23 @@
           <!-- Textos sobre el campo -->
           <div id="text-overlays"></div>
 
-          <button id="eliminar-objeto" style="display: none; position: absolute; z-index: 10;">🗑 Eliminar</button>
+          <button
+            id="eliminar-objeto"
+            style="display: none; position: absolute; z-index: 10"
+          >
+            🗑 Eliminar
+          </button>
 
           <div class="canvas-buttons-modern">
-  <!-- Zona izquierda: categorías -->
+            <!-- Zona izquierda: categorías -->
             <div class="tools-left">
-              <button onclick="mostrarGrupo('personas')">👥</button>
-              <button onclick="mostrarGrupo('materiales')">🏗️</button>
-              <button onclick="mostrarGrupo('texto')">✍️</button>
+              <button onclick="mostrarGrupo('personas')" type="button">
+                👥
+              </button>
+              <button onclick="mostrarGrupo('materiales')" type="button">
+                🏗️
+              </button>
+              <button onclick="mostrarGrupo('texto')" type="button">✍️</button>
             </div>
 
             <!-- Zona central: herramientas activas -->
@@ -123,43 +209,37 @@
                 <img src="img/cono-chincheta.png" draggable="true" />
                 <img src="img/valla.png" draggable="true" />
                 <img src="img/escalera.png" draggable="true" />
-                <img src="img/escaleraLateral.png" draggable="true" />´
+                <img src="img/escaleraLateral.png" draggable="true" />
                 <img src="img/aro.png" draggable="true" />
                 <img src="img/posta.png" draggable="true" />
                 <img src="img/barrera.png" draggable="true" />
                 <img src="img/porteria.png" draggable="true" />
-
-                
               </div>
 
               <div id="grupo-texto" class="tools hidden">
-                <img src="img/flecha-recta.png" draggable="true" data-tipo="flecha" />
-                <!-- <img src="img/flecha-curva.png" draggable="true" data-tipo="flecha" /> -->
-                <!-- <button id="add-text-btn" title="Añadir texto"><img src="img/text-icon.png" /></button> -->
-                 <button id="add-text-btn" class="tool-button">
+                <button id="add-text-btn" class="tool-button" type="button">
                   <img src="img/text-icon.png" alt="Texto" draggable="false" />
                 </button>
-
               </div>
             </div>
 
             <!-- Zona derecha: acciones -->
             <div class="tools-right">
-              <button class="cerrar" onclick="cerrarPizarra()">Cerrar</button>
-              <button class="guardar" onclick="guardarDiseno()">Guardar</button>
+              <button class="cerrar" type="button" onclick="cerrarPizarra()">
+                Cerrar
+              </button>
+              <button class="guardar" type="button" onclick="guardarDiseno()">
+                Guardar
+              </button>
             </div>
           </div>
-
-
-
         </div>
 
         <p id="mensaje"></p>
       </section>
     </main>
-  </div>
 
-  <script src="js/crear.js"></script>
-  <script src="js/canvasEditor.js"></script>
-</body>
+    <script src="js/crear.js"></script>
+    <script src="js/canvasEditor.js"></script>
+  </body>
 </html>

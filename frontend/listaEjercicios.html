@@ -1,37 +1,66 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Ejercicios de Fútbol</title>
-  <link rel="stylesheet" href="css/styles.css" />
-</head>
-<body>
-  <div class="layout">
-    <aside class="sidebar">
-      <h2>Menú</h2>
-      <nav>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- ICONOS Y COLOR DEL NAVEGADOR -->
+    <link
+      rel="icon"
+      type="image/png"
+      href="img/favicon-proyecto.png"
+      sizes="32x32"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      href="img/favicon-proyecto-192.png"
+      sizes="192x192"
+    />
+    <link
+      rel="apple-touch-icon"
+      href="img/favicon-proyecto-180.png"
+      sizes="180x180"
+    />
+    <meta name="theme-color" content="#0f331b" />
+    <title>Lista de Ejercicios</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <!-- TOPBAR GLOBAL: logo izq, menú centro, perfil der -->
+    <header class="topnav">
+      <div class="topnav-left">
+        <a class="app-logo" href="listaEjercicios.html">
+          <img src="img/favicon-proyecto.png"" alt="Logo CoachFutbol" />
+          <span>COACHFUTBOL</span></a
+        >
+      </div>
+
+      <nav class="topnav-center">
         <ul>
-          <li><a href="listaEjercicios.html" class="active">Lista de Ejercicios</a></li>
+          <li>
+            <a href="listaEjercicios.html" class="active"
+              >Lista de Ejercicios</a
+            >
+          </li>
           <li><a href="crear.html">Crear ejercicio</a></li>
-          <li><a href="#">Estadísticas</a></li>
+          <li><a href="#">Mi Espacio</a></li>
           <li><a href="#">Ayuda</a></li>
         </ul>
       </nav>
-    </aside>
 
-    <main>
-      <header class="topbar">
-        <div class="topbar-content">
-          <h1>Ejercicios de Fútbol</h1>
-          <button class="logout">Logout</button>
-        </div>
-      </header>
+      <div class="topnav-right">
+        <button class="profile-btn" title="Perfil"></button>
+      </div>
+    </header>
 
-      <section class="contenido">
-        <h2>Filtrar ejercicios</h2>
+    <!-- CONTENIDO DE ESTA PÁGINA -->
+    <div class="page">
+      <!-- Lateral de filtros (solo existe en esta página) -->
+      <aside class="filters-aside">
+        <h2>Filtros</h2>
+
         <div id="filtros">
-          <label for="tipo">Tipo:</label>
+          <label for="filtro-tipo">Tipo</label>
           <select id="filtro-tipo">
             <option value="">Todos</option>
             <option value="técnico">Técnico</option>
@@ -39,7 +68,7 @@
             <option value="físico">Físico</option>
           </select>
 
-          <label for="dificultad">Dificultad:</label>
+          <label for="filtro-dificultad">Dificultad</label>
           <select id="filtro-dificultad">
             <option value="">Todas</option>
             <option value="Fácil">Fácil</option>
@@ -47,21 +76,28 @@
             <option value="Difícil">Difícil</option>
           </select>
 
-          <label for="edad">Edad recomendada:</label>
-          <input type="text" id="filtro-edad" placeholder="ej: U14, 13, U16..." />
-          <label for="filtro-jugadores">Mínimo jugadores:</label>
+          <label for="filtro-edad">Edad recomendada</label>
+          <input
+            type="text"
+            id="filtro-edad"
+            placeholder="ej: U14, 13, U16..."
+          />
+
+          <label for="filtro-jugadores">Mínimo jugadores</label>
           <input type="number" id="filtro-jugadores" placeholder="ej: 6" />
 
           <button id="aplicar-filtros">Aplicar filtros</button>
         </div>
-        
-        <section class="grid-2x2">
-        <div id="lista-ejercicios"></div>
-        </section>
-      </section>
-    </main>
-  </div>
-  
-  <script src="js/listaEjercicios.js"></script>
-</body>
+      </aside>
+
+      <main class="content-main">
+        <!-- <h1 class="page-title">Lista de ejercicios</h1> -->
+
+        <!-- grid 2 columnas -->
+        <section id="lista-ejercicios" class="ejercicios-grid"></section>
+      </main>
+    </div>
+
+    <script src="js/listaEjercicios.js"></script>
+  </body>
 </html>
