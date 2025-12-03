@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import { createContext, useState, useEffect, useContext, type ReactNode } from 'react';
 import { jwtDecode } from "jwt-decode";
 
 interface User {

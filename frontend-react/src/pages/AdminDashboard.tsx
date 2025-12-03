@@ -1,13 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
-const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-`;
 
 const Title = styled.h1`
   color: white;
@@ -56,7 +49,6 @@ const Button = styled.button`
 
 const AdminDashboard = () => {
   const { user, token } = useAuth();
-  const navigate = useNavigate();
   const [pendingExercises, setPendingExercises] = useState([]);
   const [error, setError] = useState('');
 

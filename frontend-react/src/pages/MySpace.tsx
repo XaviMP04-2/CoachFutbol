@@ -4,12 +4,6 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import ExerciseCard from '../components/ExerciseCard';
 
-const Container = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-`;
-
 const Header = styled.div`
   display: flex;
   justify-content: space-between;
@@ -66,7 +60,7 @@ const EmptyState = styled.div`
 `;
 
 const MySpace = () => {
-  const { user, token } = useAuth();
+  const { token } = useAuth();
   const [exercises, setExercises] = useState<any[]>([]);
   const [folders, setFolders] = useState<any[]>([]);
   const [selectedFolder, setSelectedFolder] = useState<string | null>(null); // null = "Mis Ejercicios" (All)
