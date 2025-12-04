@@ -3,6 +3,7 @@ import CanvasEditor from '../components/CanvasEditor';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import type { CanvasElement } from '../types';
+import API_URL from '../config';
 
 const CreateExercise: React.FC = () => {
   const navigate = useNavigate();
@@ -57,7 +58,7 @@ const CreateExercise: React.FC = () => {
     };
 
     try {
-      const res = await fetch('http://localhost:5501/api/ejercicios', {
+      const res = await fetch(`${API_URL}/api/ejercicios`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',

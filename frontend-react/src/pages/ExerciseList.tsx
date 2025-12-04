@@ -4,6 +4,7 @@ import type { Exercise } from '../types';
 import ExerciseCard from '../components/ExerciseCard';
 import GrumpySearch from '../components/GrumpySearch';
 import './ExerciseList.css';
+import API_URL from '../config';
 
 const ExerciseList: React.FC = () => {
   const [exercises, setExercises] = useState<Exercise[]>([]);
@@ -19,7 +20,7 @@ const ExerciseList: React.FC = () => {
   const [playersFilter, setPlayersFilter] = useState('');
 
   useEffect(() => {
-    fetch('http://localhost:5501/api/ejercicios')
+    fetch(`${API_URL}/api/ejercicios`)
       .then(res => {
         if (!res.ok) throw new Error('Error fetching exercises');
         return res.json();

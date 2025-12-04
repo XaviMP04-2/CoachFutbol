@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import type { Exercise } from '../types';
+import API_URL from '../config';
 
 const ExerciseDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -8,7 +9,7 @@ const ExerciseDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:5501/api/ejercicios/${id}`)
+    fetch(`${API_URL}/api/ejercicios/${id}`)
       .then(res => res.json())
       .then(data => {
         setExercise(data);

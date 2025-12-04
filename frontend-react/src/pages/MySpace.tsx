@@ -3,6 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import ExerciseCard from '../components/ExerciseCard';
+import API_URL from '../config';
 
 const Header = styled.div`
   display: flex;
@@ -79,8 +80,8 @@ const MySpace = () => {
     try {
       setLoading(true);
       const [exRes, folderRes] = await Promise.all([
-        fetch('http://localhost:5501/api/ejercicios/my-space', { headers: { 'x-auth-token': token || '' } }),
-        fetch('http://localhost:5501/api/folders', { headers: { 'x-auth-token': token || '' } })
+        fetch(`${API_URL}/api/ejercicios/my-space`, { headers: { 'x-auth-token': token || '' } }),
+        fetch(`${API_URL}/api/folders`, { headers: { 'x-auth-token': token || '' } })
       ]);
 
       if (!exRes.ok || !folderRes.ok) throw new Error('Error al cargar datos');
@@ -103,7 +104,7 @@ const MySpace = () => {
     if (!newFolderName.trim()) return;
 
     try {
-      const res = await fetch('http://localhost:5501/api/folders', {
+      const res = await fetch(`${API_URL}/api/folders`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -124,7 +125,7 @@ const MySpace = () => {
 
   const moveExercise = async (exerciseId: string, folderId: string | null) => {
     try {
-      await fetch(`http://localhost:5501/api/ejercicios/${exerciseId}/move`, {
+      await fetch(`${API_URL}/api/ejercicios/${exerciseId}/move`, {
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',

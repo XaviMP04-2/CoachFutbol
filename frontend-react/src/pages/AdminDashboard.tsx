@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import styled from 'styled-components';
+import API_URL from '../config';
 
 const Title = styled.h1`
   color: white;
@@ -61,7 +62,7 @@ const AdminDashboard = () => {
 
   const fetchPending = async () => {
     try {
-      const res = await fetch('http://localhost:5501/api/ejercicios/admin/pending', {
+      const res = await fetch(`${API_URL}/api/ejercicios/admin/pending`, {
         headers: { 'x-auth-token': token || '' }
       });
       if (!res.ok) throw new Error('Error al cargar pendientes');
@@ -75,7 +76,7 @@ const AdminDashboard = () => {
 
   const handleApprove = async (id: string) => {
     try {
-      const res = await fetch(`http://localhost:5501/api/ejercicios/admin/approve/${id}`, {
+      const res = await fetch(`${API_URL}/api/ejercicios/admin/approve/${id}`, {
         method: 'PUT',
         headers: { 'x-auth-token': token || '' }
       });
