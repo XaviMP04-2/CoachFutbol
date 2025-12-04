@@ -13,6 +13,40 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   overflow: hidden;
+  
+  /* Full viewport width breakout */
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: -2rem; /* Counteract parent padding */
+  margin-bottom: 2rem;
+}
+
+.close-hero-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 6rem; /* Increased to avoid scrollbar clipping with 100vw */
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #bdc3c7;
+  font-size: 1.2rem;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  z-index: 100;
+}
+
+.close-hero-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  transform: scale(1.1);
 }
 
 .hero-section::before {

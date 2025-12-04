@@ -7,6 +7,8 @@ import './ExerciseList.css';
 import API_URL from '../config';
 
 const ExerciseList: React.FC = () => {
+
+  const [showHero, setShowHero] = useState(true);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [filteredExercises, setFilteredExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
@@ -69,18 +71,27 @@ const ExerciseList: React.FC = () => {
     </div>
   );
 
+
+
+  // ... (existing effects)
+
   return (
     <div className="page-exercise-list">
       {/* Hero Section */}
-      <section className="hero-section">
-        <div className="hero-content">
-          <h1>Biblioteca de Ejercicios</h1>
-          <p>Gestiona, crea y organiza tus sesiones de entrenamiento de fútbol con herramientas profesionales.</p>
-          <Link to="/crear" className="cta-button-hero">
-            + Crear Nuevo Ejercicio
-          </Link>
-        </div>
-      </section>
+      {showHero && (
+        <section className="hero-section">
+          <button className="close-hero-btn" onClick={() => setShowHero(false)} title="Cerrar">
+            ✕
+          </button>
+          <div className="hero-content">
+            <h1>Biblioteca de Ejercicios</h1>
+            <p>Gestiona, crea y organiza tus sesiones de entrenamiento de fútbol con herramientas profesionales.</p>
+            <Link to="/crear" className="cta-button-hero">
+              + Crear Nuevo Ejercicio
+            </Link>
+          </div>
+        </section>
+      )}
 
       <div className="layout-container">
         {/* Filters Sidebar */}
