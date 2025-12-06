@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import CanvasEditor from '../components/CanvasEditor';
+import ObjectiveSelector from '../components/ObjectiveSelector';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import type { CanvasElement } from '../types';
@@ -18,7 +19,7 @@ const CreateExercise: React.FC = () => {
     tipo: 'técnico',
     dificultad: 'Fácil',
     edadRecomendada: '',
-    objetivos: '',
+    objetivos: [] as string[],
     duracion: '',
     material: '',
     numeroJugadores: 1,
@@ -50,7 +51,7 @@ const CreateExercise: React.FC = () => {
     
     const payload = {
       ...formData,
-      objetivos: formData.objetivos.split(',').map(s => s.trim()),
+      objetivos: formData.objetivos,
       material: formData.material.split(',').map(s => s.trim()),
       numeroJugadores: Number(formData.numeroJugadores),
       autor: formData.autor || user?.username || 'Coach',
@@ -115,8 +116,11 @@ const CreateExercise: React.FC = () => {
 
             <h4 className="form-group-title">Detalles</h4>
 
-            <label htmlFor="objetivos">Objetivos (separados por coma):</label>
-            <input type="text" id="objetivos" name="objetivos" placeholder="ej: conducción, pase, finalización" value={formData.objetivos} onChange={handleChange} />
+            <label>Objetivos:</label>
+            <ObjectiveSelector 
+              selectedObjectives={formData.objetivos}
+              onChange={(newObjectives) => setFormData(prev => ({ ...prev, objetivos: newObjectives }))}
+            />
 
             <label htmlFor="duracion">Duración:</label>
             <input type="text" id="duracion" name="duracion" placeholder="ej: 15 min" value={formData.duracion} onChange={handleChange} />

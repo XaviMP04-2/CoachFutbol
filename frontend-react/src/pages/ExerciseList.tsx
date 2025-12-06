@@ -4,11 +4,17 @@ import type { Exercise } from '../types';
 import ExerciseCard from '../components/ExerciseCard';
 import GrumpySearch from '../components/GrumpySearch';
 import './ExerciseList.css';
+import { useAuth } from '../context/AuthContext';
 import API_URL from '../config';
 
 const ExerciseList: React.FC = () => {
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  
+  // Track if user manually dismissed it
+  const [isDismissed, setIsDismissed] = useState(() => {
+    return localStorage.getItem('heroDismissed') === 'true';
+  });
 
-  const [showHero, setShowHero] = useState(true);
   const [exercises, setExercises] = useState<Exercise[]>([]);
   const [filteredExercises, setFilteredExercises] = useState<Exercise[]>([]);
   const [loading, setLoading] = useState(true);
@@ -20,6 +26,8 @@ const ExerciseList: React.FC = () => {
   const [difficultyFilter, setDifficultyFilter] = useState('');
   const [ageFilter, setAgeFilter] = useState('');
   const [playersFilter, setPlayersFilter] = useState('');
+  const [objectiveFilter, setObjectiveFilter] = useState('');
+  const [availableObjectives, setAvailableObjectives] = useState<{name: string}[]>([]);
 
   useEffect(() => {
     fetch(`${API_URL}/api/ejercicios`)
@@ -33,10 +41,30 @@ const ExerciseList: React.FC = () => {
         setLoading(false);
       })
       .catch(err => {
+        console.error(err);
         setError(err.message);
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/objectives`)
+      .then(res => res.json())
+      .then(data => setAvailableObjectives(data))
+      .catch(err => console.error('Error loading objectives:', err));
+  }, []);
+
+  // Calculate visibility based on state
+  // Show if:
+  // 1. Not dismissed AND
+  // 2. (Not logged in OR (Logged in AND No created exercises))
+  const hasCreatedExercises = exercises.some(e => e.autor === user?.username);
+  const showHero = !isDismissed && (!isAuthenticated || !hasCreatedExercises);
+
+  const handleCloseHero = () => {
+    setIsDismissed(true);
+    localStorage.setItem('heroDismissed', 'true');
+  };
 
   useEffect(() => {
     const filtered = exercises.filter(e => {
@@ -45,8 +73,9 @@ const ExerciseList: React.FC = () => {
       const matchDifficulty = !difficultyFilter || e.dificultad === difficultyFilter;
       const matchAge = !ageFilter || (e.edadRecomendada && e.edadRecomendada.toLowerCase().includes(ageFilter.toLowerCase()));
       const matchPlayers = !playersFilter || (e.numeroJugadores >= parseInt(playersFilter));
+      const matchObjective = !objectiveFilter || (e.objetivos && e.objetivos.includes(objectiveFilter));
       
-      return matchSearch && matchType && matchDifficulty && matchAge && matchPlayers;
+      return matchSearch && matchType && matchDifficulty && matchAge && matchPlayers && matchObjective;
     });
     setFilteredExercises(filtered);
   }, [searchTerm, typeFilter, difficultyFilter, ageFilter, playersFilter, exercises]);
@@ -57,6 +86,7 @@ const ExerciseList: React.FC = () => {
     setDifficultyFilter('');
     setAgeFilter('');
     setPlayersFilter('');
+    setObjectiveFilter('');
   };
 
   if (loading) return (
@@ -78,9 +108,10 @@ const ExerciseList: React.FC = () => {
   return (
     <div className="page-exercise-list">
       {/* Hero Section */}
-      {showHero && (
+      {/* Only show when not loading to avoid flickering */}
+      {!loading && !authLoading && showHero && (
         <section className="hero-section">
-          <button className="close-hero-btn" onClick={() => setShowHero(false)} title="Cerrar">
+          <button className="close-hero-btn" onClick={handleCloseHero} title="Cerrar">
             ✕
           </button>
           <div className="hero-content">
@@ -153,6 +184,21 @@ const ExerciseList: React.FC = () => {
               value={playersFilter}
               onChange={e => setPlayersFilter(e.target.value)}
             />
+          </div>
+
+          <div className="filter-item">
+            <label htmlFor="filtro-objetivo">Objetivo</label>
+            <select 
+                id="filtro-objetivo" 
+                className="filter-select"
+                value={objectiveFilter} 
+                onChange={e => setObjectiveFilter(e.target.value)}
+            >
+              <option value="">Todos los objetivos</option>
+              {availableObjectives.map(obj => (
+                <option key={obj.name} value={obj.name}>{obj.name}</option>
+              ))}
+            </select>
           </div>
         </aside>
 

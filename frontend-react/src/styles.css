@@ -45,7 +45,7 @@ body {
 }
 
 .header-content {
-  max-width: 1600px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 0 2rem;
   display: flex;
@@ -82,6 +82,7 @@ body {
   font-weight: 800;
   font-size: 1.2rem;
   background: linear-gradient(to right, #fff, #a5a5a5);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.5px;
@@ -178,7 +179,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 1600px;
+  max-width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
 }
@@ -193,6 +194,7 @@ body {
   font-size: 2rem;
   margin-bottom: 2rem;
   background: linear-gradient(to right, #fff, #a5a5a5);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -200,7 +202,7 @@ body {
 /* Standard Page Layout */
 .standard-page-container {
   width: 100%;
-  max-width: 1600px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 2rem;
   box-sizing: border-box;
