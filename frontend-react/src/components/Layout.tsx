@@ -23,6 +23,10 @@ const Layout = () => {
               <span className="nav-icon">⚽</span>
               Ejercicios
             </Link>
+            <Link to="/pizarra" className={`nav-link ${isActive('/pizarra')}`}>
+              <span className="nav-icon">🎯</span>
+              Pizarra
+            </Link>
             <Link to="/crear" className={`nav-link ${isActive('/crear')}`}>
               <span className="nav-icon">✨</span>
               Crear

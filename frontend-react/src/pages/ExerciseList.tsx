@@ -68,7 +68,8 @@ const ExerciseList: React.FC = () => {
 
   useEffect(() => {
     const filtered = exercises.filter(e => {
-      const matchSearch = e.titulo.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchSearch = e.titulo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          (e.autor && e.autor.toLowerCase().includes(searchTerm.toLowerCase()));
       const matchType = !typeFilter || e.tipo === typeFilter;
       const matchDifficulty = !difficultyFilter || e.dificultad === difficultyFilter;
       const matchAge = !ageFilter || (e.edadRecomendada && e.edadRecomendada.toLowerCase().includes(ageFilter.toLowerCase()));
@@ -209,7 +210,7 @@ const ExerciseList: React.FC = () => {
             <GrumpySearch 
                 value={searchTerm}
                 onChange={setSearchTerm}
-                placeholder="Buscar ejercicios por título..."
+                placeholder="Buscar ejercicios por título, autor..."
             />
           </div>
 

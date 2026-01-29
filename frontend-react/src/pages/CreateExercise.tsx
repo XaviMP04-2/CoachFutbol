@@ -13,7 +13,7 @@ const CreateExercise: React.FC = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [cloudinaryUrl, setCloudinaryUrl] = useState<string>(''); // URL from Cloudinary
   const [elements, setElements] = useState<CanvasElement[]>([]);
-  const [isPublic, setIsPublic] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
   const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState({
     titulo: '',
@@ -125,8 +125,8 @@ const CreateExercise: React.FC = () => {
   };
 
   return (
-    <main className="content-main" style={{ padding: '1.5rem' }}>
-      <section className="contenido">
+    <main className="content-main" style={{ padding: '0.75rem 1.5rem' }}>
+      <section className="contenido" style={{ paddingTop: '0.5rem' }}>
         <div className="crear-layout">
           {/* FORMULARIO */}
           <form id="form-ejercicio" className="formulario" autoComplete="off" onSubmit={handleSubmit}>

@@ -220,7 +220,7 @@ body {
   flex-direction: column;
   gap: 2rem;
   align-items: center;
-  margin-top: 2rem;
+  margin-top: 0;
   width: 100%;
   box-sizing: border-box;
   flex-grow: 1;
@@ -335,7 +335,7 @@ body {
     flex-direction: row;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 3rem; /* Legacy large gap */
+    gap: 1.5rem;
   }
 
   .formulario {

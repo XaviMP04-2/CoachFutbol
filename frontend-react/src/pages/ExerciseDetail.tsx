@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import type { Exercise } from '../types';
 import { useAuth } from '../context/AuthContext';
 import API_URL from '../config';
@@ -7,6 +7,7 @@ import { jsPDF } from 'jspdf';
 
 const ExerciseDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { isAuthenticated, isFavorite, toggleFavorite } = useAuth();
   const [exercise, setExercise] = useState<Exercise | null>(null);
   const [loading, setLoading] = useState(true);
@@ -271,7 +272,19 @@ const ExerciseDetail: React.FC = () => {
     <main className="content-main" style={{ padding: '1.5rem' }}>
       <div className="contenido">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-          <Link to="/ejercicios" style={{ color: '#2ecc71', textDecoration: 'none' }}>&larr; Volver a la lista</Link>
+          <button 
+            onClick={() => navigate(-1)} 
+            style={{ 
+              background: 'none', 
+              border: 'none', 
+              color: '#2ecc71', 
+              cursor: 'pointer',
+              fontSize: '1rem',
+              padding: 0
+            }}
+          >
+            &larr; Volver
+          </button>
           
           <div style={{ display: 'flex', gap: '0.75rem' }}>
             {isAuthenticated && (

@@ -12,13 +12,19 @@ router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    let user = await Usuario.findOne({ email });
-
-    if (user) {
-      return res.status(400).json({ msg: 'User already exists' });
+    // Check if username already exists
+    let existingUser = await Usuario.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json({ msg: 'El nombre de usuario ya está en uso' });
     }
 
-    user = new Usuario({
+    // Check if email already exists
+    existingUser = await Usuario.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ msg: 'El correo electrónico ya está registrado' });
+    }
+
+    const user = new Usuario({
       username,
       email,
       password
@@ -55,12 +61,21 @@ router.post('/register', async (req, res) => {
       { expiresIn: 360000 },
       (err, token) => {
         if (err) throw err;
-        res.json({ token, msg: 'Registration successful. Please check email to verify (Mock).' });
+        res.json({ token, msg: 'Registro exitoso' });
       }
     );
   } catch (err) {
     console.error(err.message);
-    res.status(500).send('Server error');
+    // Handle MongoDB duplicate key errors
+    if (err.code === 11000) {
+      if (err.keyPattern?.username) {
+        return res.status(400).json({ msg: 'El nombre de usuario ya está en uso' });
+      }
+      if (err.keyPattern?.email) {
+        return res.status(400).json({ msg: 'El correo electrónico ya está registrado' });
+      }
+    }
+    res.status(500).json({ msg: 'Error del servidor. Inténtalo de nuevo.' });
   }
 });
 

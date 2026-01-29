@@ -54,6 +54,17 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onFavoriteChange 
         <div className="card-details">
           <h3 className="card-title">{exercise.titulo}</h3>
           
+          {/* Author link */}
+          {exercise.autor && (
+            <Link 
+              to={`/autor/${exercise.autor}`}
+              className="card-author"
+              onClick={(e) => e.stopPropagation()}
+            >
+              👤 {exercise.autor}
+            </Link>
+          )}
+          
           <div className="card-stats">
             <div className="stat-item">
               <span className="stat-icon">👥</span>
