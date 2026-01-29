@@ -120,4 +120,58 @@ router.get('/user', auth, async (req, res) => {
   }
 });
 
+// @route   POST api/auth/favorites/:exerciseId
+// @desc    Toggle favorite (add/remove)
+// @access  Private
+router.post('/favorites/:exerciseId', auth, async (req, res) => {
+  try {
+    const user = await Usuario.findById(req.user.id);
+    const exerciseId = req.params.exerciseId;
+    
+    const index = user.favorites.indexOf(exerciseId);
+    
+    if (index === -1) {
+      // Add to favorites
+      user.favorites.push(exerciseId);
+      await user.save();
+      res.json({ isFavorite: true, favorites: user.favorites });
+    } else {
+      // Remove from favorites
+      user.favorites.splice(index, 1);
+      await user.save();
+      res.json({ isFavorite: false, favorites: user.favorites });
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   GET api/auth/favorites
+// @desc    Get user's favorite exercises (populated)
+// @access  Private
+router.get('/favorites', auth, async (req, res) => {
+  try {
+    const user = await Usuario.findById(req.user.id).populate('favorites');
+    res.json(user.favorites || []);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
+// @route   GET api/auth/favorites/ids
+// @desc    Get user's favorite exercise IDs only
+// @access  Private
+router.get('/favorites/ids', auth, async (req, res) => {
+  try {
+    const user = await Usuario.findById(req.user.id).select('favorites');
+    res.json(user.favorites || []);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
+

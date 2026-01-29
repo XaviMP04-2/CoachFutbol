@@ -7,6 +7,7 @@ const usuarioSchema = new mongoose.Schema({
   isVerified: { type: Boolean, default: false },
   verificationToken: { type: String },
   isAdmin: { type: Boolean, default: false },
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ejercicio' }],
   createdAt: { type: Date, default: Date.now }
 });
 

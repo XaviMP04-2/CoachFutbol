@@ -1,13 +1,28 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import type { Exercise } from '../types';
-import './ExerciseCard.css'; // We'll create this small CSS file for the card specific styles
+import { useAuth } from '../context/AuthContext';
+import './ExerciseCard.css';
 
 interface ExerciseCardProps {
   exercise: Exercise;
+  onFavoriteChange?: () => void; // Optional callback when favorite status changes
 }
 
-const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise }) => {
+const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise, onFavoriteChange }) => {
+  const { isAuthenticated, isFavorite, toggleFavorite } = useAuth();
+  const exerciseIsFavorite = isFavorite(exercise._id);
+
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation
+    e.stopPropagation();
+    await toggleFavorite(exercise._id);
+    // Notify parent if callback provided
+    if (onFavoriteChange) {
+      onFavoriteChange();
+    }
+  };
+
   return (
     <Link to={`/ejercicio/${exercise._id}`} className="exercise-card-link">
       <div className="exercise-card-premium">
@@ -23,6 +38,17 @@ const ExerciseCard: React.FC<ExerciseCardProps> = ({ exercise }) => {
             <span className={`badge-pill badge-${exercise.tipo}`}>{exercise.tipo}</span>
             <span className={`badge-pill badge-difficulty`}>{exercise.dificultad}</span>
           </div>
+          
+          {/* Favorite button */}
+          {isAuthenticated && (
+            <button 
+              className={`favorite-btn ${exerciseIsFavorite ? 'is-favorite' : ''}`}
+              onClick={handleFavoriteClick}
+              title={exerciseIsFavorite ? 'Quitar de favoritos' : 'Añadir a favoritos'}
+            >
+              {exerciseIsFavorite ? '❤️' : '🤍'}
+            </button>
+          )}
         </div>
         
         <div className="card-details">
