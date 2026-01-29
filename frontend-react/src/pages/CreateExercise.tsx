@@ -11,8 +11,10 @@ const CreateExercise: React.FC = () => {
   const { token, isAuthenticated, user } = useAuth();
   const [showCanvas, setShowCanvas] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [cloudinaryUrl, setCloudinaryUrl] = useState<string>(''); // URL from Cloudinary
   const [elements, setElements] = useState<CanvasElement[]>([]);
   const [isPublic, setIsPublic] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [formData, setFormData] = useState({
     titulo: '',
     descripcion: '',
@@ -40,14 +42,55 @@ const CreateExercise: React.FC = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSaveCanvas = (dataUrl: string) => {
-    setPreviewImage(dataUrl);
-    setFormData(prev => ({ ...prev, archivoUrl: dataUrl }));
+  // Upload image to Cloudinary
+  const uploadToCloudinary = async (base64Image: string): Promise<string> => {
+    setIsUploading(true);
+    try {
+      const res = await fetch(`${API_URL}/api/upload`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token || ''
+        },
+        body: JSON.stringify({ image: base64Image })
+      });
+
+      if (!res.ok) {
+        throw new Error('Error uploading image');
+      }
+
+      const data = await res.json();
+      return data.url;
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleSaveCanvas = async (dataUrl: string) => {
+    setPreviewImage(dataUrl); // Show preview immediately (still Base64 for preview)
     setShowCanvas(false);
+    
+    // Upload to Cloudinary in background
+    try {
+      const url = await uploadToCloudinary(dataUrl);
+      setCloudinaryUrl(url);
+      setFormData(prev => ({ ...prev, archivoUrl: url }));
+    } catch (err) {
+      console.error('Error uploading to Cloudinary:', err);
+      // Fallback to Base64 if Cloudinary fails
+      setFormData(prev => ({ ...prev, archivoUrl: dataUrl }));
+      alert('⚠️ No se pudo subir a CDN, usando imagen local (puede ser más lento)');
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Wait for upload if still in progress
+    if (isUploading) {
+      alert('Espera, la imagen se está subiendo...');
+      return;
+    }
     
     const payload = {
       ...formData,
@@ -144,13 +187,25 @@ const CreateExercise: React.FC = () => {
               </label>
             </div>
 
-            <button type="submit">Guardar ejercicio</button>
+            <button type="submit" disabled={isUploading}>
+              {isUploading ? '⏳ Subiendo imagen...' : 'Guardar ejercicio'}
+            </button>
           </form>
 
           {/* TARJETA DE PREVISUALIZACIÓN */}
           <aside className="preview-card">
             <div className="preview-card__header">
               <h3>Previsualización</h3>
+              {isUploading && (
+                <span style={{ fontSize: '0.8rem', color: '#3498db' }}>
+                  ⏳ Subiendo a CDN...
+                </span>
+              )}
+              {cloudinaryUrl && !isUploading && (
+                <span style={{ fontSize: '0.8rem', color: '#2ecc71' }}>
+                  ✓ En CDN
+                </span>
+              )}
             </div>
 
             <div className="miniatura-campo" onClick={() => setShowCanvas(true)}>
