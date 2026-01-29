@@ -80,7 +80,7 @@ const SidebarItem = styled.div<{ $active: boolean; $isSpecial?: boolean }>`
 `;
 
 const MySpace = () => {
-  const { token } = useAuth();
+  const { token, favorites } = useAuth();
   const [exercises, setExercises] = useState<any[]>([]);
   const [favoriteExercises, setFavoriteExercises] = useState<Exercise[]>([]);
   const [folders, setFolders] = useState<any[]>([]);
@@ -95,6 +95,17 @@ const MySpace = () => {
       fetchData();
     }
   }, [token]);
+
+  // Sync with AuthContext favorites - refetch when favorites change
+  useEffect(() => {
+    if (token && favorites.length >= 0) {
+      // Refetch favorite exercises when AuthContext favorites change
+      fetch(`${API_URL}/api/auth/favorites`, { headers: { 'x-auth-token': token || '' } })
+        .then(res => res.ok ? res.json() : [])
+        .then(data => setFavoriteExercises(data))
+        .catch(err => console.error('Error syncing favorites:', err));
+    }
+  }, [token, favorites]);
 
   const fetchData = async () => {
     try {

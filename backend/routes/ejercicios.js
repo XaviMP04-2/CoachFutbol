@@ -174,6 +174,20 @@ router.put("/admin/approve/:id", auth, async (req, res) => {
   }
 });
 
+// @route   PUT api/ejercicios/admin/reject/:id
+// @desc    Reject exercise (set to private)
+// @access  Private (Admin)
+router.put("/admin/reject/:id", auth, async (req, res) => {
+  try {
+    // Reject means setting back to private (user can edit and resubmit)
+    await Ejercicio.findByIdAndUpdate(req.params.id, { status: 'private' });
+    res.json({ msg: 'Ejercicio rechazado' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route   PUT api/ejercicios/:id/move
 // @desc    Move exercise to folder
 // @access  Private
