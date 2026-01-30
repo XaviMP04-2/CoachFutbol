@@ -1031,18 +1031,16 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
   };
 
   // Touch event handlers (for mobile support)
+  // Note: preventDefault removed - 'touch-action: none' on canvas handles scroll prevention
   const handleTouchStart = (e: React.TouchEvent) => {
-    e.preventDefault(); // Prevent scrolling while drawing
     handleMouseDown(e as unknown as React.MouseEvent);
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    e.preventDefault();
     handleMouseMove(e as unknown as React.MouseEvent);
   };
 
   const handleTouchEnd = (e: React.TouchEvent) => {
-    e.preventDefault();
     handleMouseUp(e as unknown as React.MouseEvent);
   };
 
