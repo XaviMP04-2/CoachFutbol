@@ -504,3 +504,152 @@ body {
     transform: translateX(-50%) scale(1.05);
   }
 }
+
+/* ================================================================
+   CANVAS EDITOR RESPONSIVE STYLES
+   ================================================================ */
+
+/* Base styles - these work WITH inline styles */
+.canvas-editor-container {
+  /* Inline styles handle the layout */
+}
+
+.canvas-editor-toolbar {
+  /* Inline styles handle the layout */
+}
+
+.canvas-editor-area {
+  /* Inline styles handle the layout */
+}
+
+/* Tool Popup - Desktop positioning */
+.canvas-tool-popup {
+  position: absolute;
+  top: 5rem;
+  left: 1rem;
+  background: rgba(44, 62, 80, 0.98);
+  padding: 1rem;
+  border-radius: 10px;
+  z-index: 40;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+/* Pending Placement Indicator */
+.canvas-pending-indicator {
+  position: absolute;
+  top: 0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #27ae60;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  z-index: 50;
+  box-shadow: 0 3px 15px rgba(39, 174, 96, 0.4);
+  animation: pulse 1.5s infinite;
+  white-space: nowrap;
+}
+
+.canvas-action-buttons {
+  /* Inline styles handle the layout */
+}
+
+/* ================================================================
+   MOBILE STYLES (max-width: 768px)
+   ================================================================ */
+@media (max-width: 768px) {
+  /* Container: Column layout */
+  .canvas-editor-container {
+    flex-direction: column;
+  }
+  
+  /* Toolbar: Bottom horizontal bar */
+  .canvas-editor-toolbar {
+    order: 2; /* Move to bottom */
+    width: 100%;
+    min-width: unset;
+    height: 70px;
+    min-height: 70px;
+    flex-direction: row;
+    padding: 0.5rem;
+    gap: 0.4rem;
+    justify-content: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    box-shadow: 0 -3px 15px rgba(0,0,0,0.4);
+  }
+  
+  /* Canvas Area: Takes remaining space at top */
+  .canvas-editor-area {
+    order: 1;
+    padding: 0.5rem;
+    flex: 1;
+  }
+  
+  /* Tool Popup: Center modal */
+  .canvas-tool-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 320px;
+    max-height: 70vh;
+  }
+  
+  /* Action Buttons: Convert from sidebar to floating buttons */
+  .canvas-action-buttons {
+    position: fixed;
+    top: 0.5rem;
+    right: 0.5rem;
+    width: auto;
+    min-width: unset;
+    height: auto;
+    background: transparent;
+    flex-direction: row;
+    padding: 0;
+    gap: 0.5rem;
+    box-shadow: none;
+  }
+  
+  .canvas-action-buttons button {
+    width: 45px !important;
+    height: 45px !important;
+    font-size: 1.2rem !important;
+  }
+  
+  /* Tool buttons smaller on mobile */
+  .canvas-editor-toolbar .tool-btn {
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px;
+    font-size: 1.1rem !important;
+  }
+}
+
+/* Very small screens */
+@media (max-width: 500px) {
+  .canvas-editor-toolbar {
+    height: 60px;
+    min-height: 60px;
+    gap: 0.25rem;
+  }
+  
+  .canvas-editor-toolbar .tool-btn {
+    width: 38px !important;
+    height: 38px !important;
+    min-width: 38px;
+    font-size: 1rem !important;
+  }
+  
+  .canvas-tool-popup {
+    width: 95%;
+    max-height: 65vh;
+    padding: 0.75rem;
+  }
+}
