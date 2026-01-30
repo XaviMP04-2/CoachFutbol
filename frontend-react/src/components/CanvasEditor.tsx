@@ -49,6 +49,14 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
   // Scale state for overlays
   const [scale, setScale] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
+  
+  // Mobile detection
+  const [isMobile, setIsMobile] = useState(false);
+  // Pending element to place on tap (for mobile)
+  const [pendingPlacement, setPendingPlacement] = useState<{
+    type: 'jugador' | 'material';
+    data: { color?: string; number?: string; imgSrc?: string };
+  } | null>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -56,6 +64,8 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
         const rect = canvasRef.current.getBoundingClientRect();
         setScale(rect.width / LOGICAL_WIDTH);
         setOffset({ x: rect.left, y: rect.top });
+        // Detect mobile based on window width
+        setIsMobile(window.innerWidth < 768);
     };
 
     window.addEventListener('resize', handleResize);
@@ -698,6 +708,41 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
   const handleMouseDown = (e: React.MouseEvent) => {
     const { x, y } = getCanvasCoords(e);
 
+    // Handle pending placement (mobile tap-to-place)
+    if (pendingPlacement) {
+      if (pendingPlacement.type === 'jugador') {
+        setElements(prev => [...prev, {
+          id: Date.now().toString(),
+          tipo: 'jugador',
+          x,
+          y,
+          width: 40,
+          height: 40,
+          color: pendingPlacement.data.color || selectedColor,
+          number: pendingPlacement.data.number || selectedNumber,
+          textColor: '#fff'
+        }]);
+      } else if (pendingPlacement.type === 'material' && pendingPlacement.data.imgSrc) {
+        const img = new Image();
+        img.src = pendingPlacement.data.imgSrc;
+        img.onload = () => {
+          let width = 40, height = 40;
+          if (pendingPlacement.data.imgSrc?.includes("balon")) { width = 30; height = 30; }
+          else if (pendingPlacement.data.imgSrc?.includes("porteria")) { width = 120; height = 60; }
+          else if (pendingPlacement.data.imgSrc?.includes("cono")) { width = 35; height = 35; }
+          
+          setElements(prev => [...prev, {
+            id: Date.now().toString(),
+            tipo: 'imagen',
+            x, y, width, height, img
+          }]);
+        };
+      }
+      setPendingPlacement(null);
+      setActiveTab(null);
+      return;
+    }
+
     if (activeTab === 'flecha') {
         setIsDrawingArrow(true);
         setArrowStart({ x, y });
@@ -1078,7 +1123,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
   return (
     <div id="canvas-container" style={{ 
         display: 'flex', 
-        flexDirection: 'row', // Horizontal layout
+        flexDirection: isMobile ? 'column' : 'row',
         position: 'fixed', 
         top: 0, 
         left: 0, 
@@ -1089,19 +1134,32 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
         padding: 0
     }}>
       
-      {/* LEFT SIDEBAR - TOOLS */}
-      <div className="sidebar-left" style={{
-          width: '80px',
+      {/* TOOLBAR - Left sidebar on desktop, bottom bar on mobile */}
+      <div className="toolbar" style={{
+          ...(isMobile ? {
+            // Mobile: horizontal bar at bottom
+            order: 2,
+            width: '100%',
+            height: '60px',
+            flexDirection: 'row',
+            padding: '0.5rem',
+            gap: '0.5rem',
+            justifyContent: 'center',
+            overflowX: 'auto'
+          } : {
+            // Desktop: vertical sidebar
+            width: '80px',
+            flexDirection: 'column',
+            padding: '1rem 0',
+            gap: '1.5rem'
+          }),
           background: '#2c3e50',
           display: 'flex',
-          flexDirection: 'column',
           alignItems: 'center',
-          padding: '1rem 0',
-          gap: '1.5rem',
           zIndex: 30,
-          boxShadow: '2px 0 10px rgba(0,0,0,0.3)'
+          boxShadow: isMobile ? '0 -2px 10px rgba(0,0,0,0.3)' : '2px 0 10px rgba(0,0,0,0.3)'
       }}>
-        <button onClick={() => { setActiveTab(null); setSelectedElementId(null); }} className={`tool-btn ${activeTab === null ? 'active' : ''}`} title="Seleccionar/Mover">
+        <button onClick={() => { setActiveTab(null); setSelectedElementId(null); setPendingPlacement(null); }} className={`tool-btn ${activeTab === null && !pendingPlacement ? 'active' : ''}`} title="Seleccionar/Mover">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style={{ transform: 'rotate(-10deg)' }}>
             <path d="M5 3L5 18L9 14L12 21L15 20L12 13L18 13L5 3Z" fill="white" stroke="black" strokeWidth="1.5" strokeLinejoin="round"/>
           </svg>
@@ -1112,7 +1170,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
         <button onClick={() => setActiveTab(activeTab === 'flecha' ? null : 'flecha')} className={`tool-btn ${activeTab === 'flecha' ? 'active' : ''}`} title="Flecha">↗️</button>
         <button onClick={() => setActiveTab(activeTab === 'formas' ? null : 'formas')} className={`tool-btn ${activeTab === 'formas' ? 'active' : ''}`} title="Formas">⬜</button>
         
-        <div style={{ flex: 1 }}></div>
+        {!isMobile && <div style={{ flex: 1 }}></div>}
         
         <button onClick={handleUndo} className="tool-btn" title="Deshacer (Ctrl+Z)" style={{ fontSize: '1.2rem' }}>↩️</button>
         <button onClick={handleRedo} className="tool-btn" title="Rehacer (Ctrl+Y)" style={{ fontSize: '1.2rem' }}>↪️</button>
@@ -1158,49 +1216,68 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
         {activeTab === 'personas' && (
             <div className="tool-popup" style={{
                 position: 'absolute',
-                top: '6rem',
-                left: '1rem',
-                background: 'rgba(44, 62, 80, 0.95)',
+                ...(isMobile ? {
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '90%',
+                  maxWidth: '300px'
+                } : {
+                  top: '6rem',
+                  left: '1rem'
+                }),
+                background: 'rgba(44, 62, 80, 0.98)',
                 padding: '1rem',
                 borderRadius: '10px',
                 display: 'flex',
                 gap: '1rem',
                 zIndex: 40,
-                boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+                boxShadow: '0 4px 15px rgba(0,0,0,0.5)',
                 flexDirection: 'column',
                 maxHeight: '80vh',
                 overflowY: 'auto'
             }}>
-               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+               {isMobile && <div style={{ color: 'white', fontSize: '0.9rem', textAlign: 'center', marginBottom: '0.5rem' }}>Toca en el campo para colocar</div>}
+               
+               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', justifyContent: isMobile ? 'center' : 'flex-start' }}>
                  <label style={{ color: 'white', fontSize: '0.8rem' }}>Color:</label>
-                 <input type="color" value={selectedColor} onChange={e => setSelectedColor(e.target.value)} style={{ border: 'none', width: '30px', height: '30px', cursor: 'pointer', borderRadius: '50%', overflow: 'hidden' }} />
+                 <input type="color" value={selectedColor} onChange={e => setSelectedColor(e.target.value)} style={{ border: 'none', width: '40px', height: '40px', cursor: 'pointer', borderRadius: '50%', overflow: 'hidden' }} />
                </div>
 
-               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+               <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', justifyContent: isMobile ? 'center' : 'flex-start' }}>
                  <label style={{ color: 'white', fontSize: '0.8rem' }}>Dorsal:</label>
-                 <input type="text" value={selectedNumber} onChange={e => setSelectedNumber(e.target.value)} style={{ width: '40px', padding: '5px', borderRadius: '5px', border: 'none', textAlign: 'center' }} maxLength={2} />
+                 <input type="text" value={selectedNumber} onChange={e => setSelectedNumber(e.target.value)} style={{ width: '50px', padding: '8px', borderRadius: '5px', border: 'none', textAlign: 'center', fontSize: '1rem' }} maxLength={2} />
                </div>
 
-               <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+               <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem', justifyContent: 'center' }}>
                     <div 
-                        draggable 
-                        onDragStart={e => {
+                        {...(!isMobile ? {
+                          draggable: true,
+                          onDragStart: (e: React.DragEvent) => {
                             e.dataTransfer.setData('type', 'jugador');
                             e.dataTransfer.setData('color', selectedColor);
                             e.dataTransfer.setData('number', selectedNumber);
+                          }
+                        } : {})}
+                        onClick={() => {
+                          if (isMobile) {
+                            setPendingPlacement({ type: 'jugador', data: { color: selectedColor, number: selectedNumber } });
+                            setActiveTab(null);
+                          }
                         }}
                         style={{ 
-                            width: '40px', 
-                            height: '40px', 
+                            width: '50px', 
+                            height: '50px', 
                             background: selectedColor, 
                             borderRadius: '50%', 
-                            border: '2px solid white', 
+                            border: '3px solid white', 
                             display: 'flex', 
                             alignItems: 'center', 
                             justifyContent: 'center',
-                            cursor: 'grab',
+                            cursor: 'pointer',
                             color: 'white',
-                            fontWeight: 'bold'
+                            fontWeight: 'bold',
+                            fontSize: '1.2rem'
                         }}
                     >
                         {selectedNumber}
@@ -1209,53 +1286,117 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
 
                <div style={{ width: '100%', height: '1px', background: 'rgba(255,255,255,0.2)', margin: '0.5rem 0' }}></div>
                
-               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+               <div style={{ display: 'grid', gridTemplateColumns: isMobile ? '1fr 1fr 1fr 1fr' : '1fr 1fr', gap: '0.5rem' }}>
                    {['jugadora2.png', 'jugador1.png', 'jugadora1.png', 'jugador2.png'].map(src => (
                        <div key={src} style={{ display: 'flex', justifyContent: 'center' }}>
-                            <img src={`/img/${src}`} draggable onDragStart={e => e.dataTransfer.setData('imgSrc', e.currentTarget.src)} style={{ width: '40px', cursor: 'grab' }} />
+                            <img 
+                              src={`/img/${src}`} 
+                              {...(!isMobile ? {
+                                draggable: true,
+                                onDragStart: (e: React.DragEvent<HTMLImageElement>) => e.dataTransfer.setData('imgSrc', e.currentTarget.src)
+                              } : {})}
+                              onClick={() => {
+                                if (isMobile) {
+                                  setPendingPlacement({ type: 'material', data: { imgSrc: `/img/${src}` } });
+                                  setActiveTab(null);
+                                }
+                              }}
+                              style={{ width: '45px', cursor: 'pointer' }} 
+                            />
                        </div>
                    ))}
                </div>
+               
+               {isMobile && (
+                 <button 
+                   onClick={() => setActiveTab(null)} 
+                   style={{ marginTop: '0.5rem', padding: '0.8rem', background: '#e74c3c', border: 'none', borderRadius: '8px', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}
+                 >
+                   Cerrar
+                 </button>
+               )}
             </div>
         )}
 
         {activeTab === 'materiales' && (
             <div className="tool-popup" style={{
                 position: 'absolute',
-                top: '6rem',
-                left: '1rem',
-                background: 'rgba(44, 62, 80, 0.95)',
+                ...(isMobile ? {
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '90%',
+                  maxWidth: '320px'
+                } : {
+                  top: '6rem',
+                  left: '1rem'
+                }),
+                background: 'rgba(44, 62, 80, 0.98)',
                 padding: '1rem',
                 borderRadius: '10px',
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
+                display: 'flex',
+                flexDirection: 'column',
                 gap: '1rem',
                 zIndex: 40,
                 maxHeight: '80vh',
                 overflowY: 'auto',
-                boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+                boxShadow: '0 4px 15px rgba(0,0,0,0.5)'
             }}>
-               {['balon.png', 'cono.png', 'porteria.png', 'cono-chincheta.png', 'valla.png', 'escalera.png', 'aro.png', 'posta.png', 'barrera.png'].map(src => (
+               {isMobile && <div style={{ color: 'white', fontSize: '0.9rem', textAlign: 'center' }}>Toca un material y luego el campo</div>}
+               
+               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+                 {['balon.png', 'cono.png', 'porteria.png', 'cono-chincheta.png', 'valla.png', 'escalera.png', 'aro.png', 'posta.png', 'barrera.png'].map(src => (
                    <div key={src} style={{ display: 'flex', justifyContent: 'center' }}>
-                       <img src={`/img/${src}`} draggable onDragStart={e => e.dataTransfer.setData('imgSrc', e.currentTarget.src)} style={{ width: '40px', cursor: 'grab' }} />
+                       <img 
+                         src={`/img/${src}`} 
+                         {...(!isMobile ? {
+                           draggable: true,
+                           onDragStart: (e: React.DragEvent<HTMLImageElement>) => e.dataTransfer.setData('imgSrc', e.currentTarget.src)
+                         } : {})}
+                         onClick={() => {
+                           if (isMobile) {
+                             setPendingPlacement({ type: 'material', data: { imgSrc: `/img/${src}` } });
+                             setActiveTab(null);
+                           }
+                         }}
+                         style={{ width: '45px', cursor: 'pointer', padding: '4px', borderRadius: '8px', background: 'rgba(255,255,255,0.1)' }} 
+                       />
                    </div>
-               ))}
+                 ))}
+               </div>
+               
+               {isMobile && (
+                 <button 
+                   onClick={() => setActiveTab(null)} 
+                   style={{ padding: '0.8rem', background: '#e74c3c', border: 'none', borderRadius: '8px', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}
+                 >
+                   Cerrar
+                 </button>
+               )}
             </div>
         )}
 
         {activeTab === 'flecha' && (
             <div className="tool-popup" style={{
                 position: 'absolute',
-                top: '6rem',
-                left: '1rem',
-                background: 'rgba(44, 62, 80, 0.95)',
+                ...(isMobile ? {
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '90%',
+                  maxWidth: '280px'
+                } : {
+                  top: '6rem',
+                  left: '1rem'
+                }),
+                background: 'rgba(44, 62, 80, 0.98)',
                 padding: '1rem',
                 borderRadius: '10px',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '0.75rem',
                 zIndex: 40,
-                boxShadow: '0 4px 15px rgba(0,0,0,0.3)'
+                boxShadow: '0 4px 15px rgba(0,0,0,0.5)'
             }}>
                 <span style={{ color: 'white', fontSize: '0.85rem', fontWeight: 'bold' }}>Tipo de flecha:</span>
                 
@@ -1324,17 +1465,25 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
         {activeTab === 'formas' && (
             <div className="tool-popup" style={{
                 position: 'absolute',
-                top: '6rem',
-                left: '1rem',
-                background: 'rgba(44, 62, 80, 0.95)',
+                ...(isMobile ? {
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '90%',
+                  maxWidth: '280px'
+                } : {
+                  top: '6rem',
+                  left: '1rem'
+                }),
+                background: 'rgba(44, 62, 80, 0.98)',
                 padding: '1rem',
                 borderRadius: '10px',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '0.75rem',
                 zIndex: 40,
-                boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
-                minWidth: '200px'
+                boxShadow: '0 4px 15px rgba(0,0,0,0.5)',
+                minWidth: isMobile ? undefined : '200px'
             }}>
                 <span style={{ color: 'white', fontSize: '0.85rem', fontWeight: 'bold' }}>Tipo de forma:</span>
                 
