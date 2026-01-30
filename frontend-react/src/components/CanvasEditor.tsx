@@ -175,8 +175,16 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      // Only handle if canvas is focused (not editing text)
-      if (isEditingText) return;
+      // Don't handle shortcuts if an input/textarea is focused
+      const activeEl = document.activeElement;
+      const isInputFocused = activeEl && (
+        activeEl.tagName === 'INPUT' || 
+        activeEl.tagName === 'TEXTAREA' ||
+        (activeEl as HTMLElement).isContentEditable
+      );
+      
+      // Only handle if canvas is focused (not editing text or using inputs)
+      if (isEditingText || isInputFocused) return;
       
       if (e.ctrlKey || e.metaKey) {
         if (e.key === 'z') {
@@ -652,7 +660,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
   };
 
   // --- Event Handlers ---
-  const getCanvasCoords = (e: React.MouseEvent) => {
+  const getCanvasCoords = (e: React.MouseEvent | React.TouchEvent | TouchEvent | MouseEvent) => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
@@ -661,9 +669,29 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
 
+    // Get clientX/Y from either mouse or touch event
+    let clientX: number, clientY: number;
+    if ('touches' in e) {
+      // Touch event
+      if (e.touches.length > 0) {
+        clientX = e.touches[0].clientX;
+        clientY = e.touches[0].clientY;
+      } else if ('changedTouches' in e && e.changedTouches.length > 0) {
+        // For touchend, use changedTouches
+        clientX = e.changedTouches[0].clientX;
+        clientY = e.changedTouches[0].clientY;
+      } else {
+        return { x: 0, y: 0 };
+      }
+    } else {
+      // Mouse event
+      clientX = e.clientX;
+      clientY = e.clientY;
+    }
+
     return {
-        x: (e.clientX - rect.left) * scaleX,
-        y: (e.clientY - rect.top) * scaleY
+        x: (clientX - rect.left) * scaleX,
+        y: (clientY - rect.top) * scaleY
     };
   };
 
@@ -960,6 +988,22 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
     setIsDragging(false);
   };
 
+  // Touch event handlers (for mobile support)
+  const handleTouchStart = (e: React.TouchEvent) => {
+    e.preventDefault(); // Prevent scrolling while drawing
+    handleMouseDown(e as unknown as React.MouseEvent);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    e.preventDefault();
+    handleMouseMove(e as unknown as React.MouseEvent);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    e.preventDefault();
+    handleMouseUp(e as unknown as React.MouseEvent);
+  };
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const { x, y } = getCanvasCoords(e);
@@ -1094,6 +1138,9 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
             onMouseMove={handleMouseMove}
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
             onDoubleClick={handleDoubleClick}
             onDragOver={e => e.preventDefault()}
             onDrop={handleDrop}
@@ -1102,7 +1149,8 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
                 maxHeight: '100%', 
                 aspectRatio: `${LOGICAL_WIDTH}/${LOGICAL_HEIGHT}`,
                 boxShadow: '0 0 30px rgba(0,0,0,0.5)',
-                cursor: (activeTab === 'flecha' || activeTab === 'formas') ? 'crosshair' : 'default'
+                cursor: (activeTab === 'flecha' || activeTab === 'formas') ? 'crosshair' : 'default',
+                touchAction: 'none' // Prevent browser gestures
             }} 
         />
         
