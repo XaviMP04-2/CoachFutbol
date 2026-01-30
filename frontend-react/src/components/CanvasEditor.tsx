@@ -50,8 +50,8 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
   const [scale, setScale] = useState(1);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   
-  // Mobile detection
-  const [isMobile, setIsMobile] = useState(false);
+  // Mobile detection - initialize immediately
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 768);
   // Pending element to place on tap (for mobile)
   const [pendingPlacement, setPendingPlacement] = useState<{
     type: 'jugador' | 'material';
@@ -1183,11 +1183,34 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
           position: 'relative', 
           overflow: 'hidden', 
           display: 'flex',
+          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
-          padding: '1rem',
-          background: '#121212'
+          padding: isMobile ? '0.5rem' : '1rem',
+          background: '#121212',
+          order: isMobile ? 1 : undefined
       }}>
+        {/* Pending placement indicator */}
+        {pendingPlacement && isMobile && (
+          <div style={{
+            position: 'absolute',
+            top: '0.5rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: '#27ae60',
+            color: 'white',
+            padding: '0.5rem 1rem',
+            borderRadius: '20px',
+            fontSize: '0.85rem',
+            fontWeight: 'bold',
+            zIndex: 50,
+            boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
+            animation: 'pulse 1.5s infinite'
+          }}>
+            👆 Toca en el campo para colocar
+          </div>
+        )}
+        
         <canvas
             ref={canvasRef}
             width={LOGICAL_WIDTH}
@@ -1206,9 +1229,10 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
                 maxWidth: '100%', 
                 maxHeight: '100%', 
                 aspectRatio: `${LOGICAL_WIDTH}/${LOGICAL_HEIGHT}`,
-                boxShadow: '0 0 30px rgba(0,0,0,0.5)',
-                cursor: (activeTab === 'flecha' || activeTab === 'formas') ? 'crosshair' : 'default',
-                touchAction: 'none' // Prevent browser gestures
+                boxShadow: pendingPlacement ? '0 0 20px #27ae60' : '0 0 30px rgba(0,0,0,0.5)',
+                cursor: pendingPlacement ? 'crosshair' : (activeTab === 'flecha' || activeTab === 'formas') ? 'crosshair' : 'default',
+                touchAction: 'none', // Prevent browser gestures
+                border: pendingPlacement ? '3px solid #27ae60' : 'none'
             }} 
         />
         

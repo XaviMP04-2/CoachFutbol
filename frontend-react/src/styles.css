@@ -492,3 +492,15 @@ body {
   color: var(--text-secondary);
   font-size: 0.9rem;
 }
+
+/* Canvas Editor Mobile Animations */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: translateX(-50%) scale(1.05);
+  }
+}
