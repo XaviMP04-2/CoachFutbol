@@ -1,0 +1,263 @@
+.myspace-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 3rem;
+}
+
+.myspace-title {
+  font-size: 2.5rem;
+  background: linear-gradient(to right, #fff, #a5a5a5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+}
+
+.myspace-header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.myspace-create-btn {
+  background: linear-gradient(45deg, var(--accent-primary), var(--accent-secondary));
+  color: white;
+  padding: 0.8rem 1.5rem;
+  border-radius: var(--radius-full);
+  text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.2s;
+}
+
+.myspace-create-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(82, 39, 255, 0.4);
+}
+
+.myspace-folder-form {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: var(--bg-card);
+  border-radius: 12px;
+}
+
+.myspace-folder-form form {
+  display: flex;
+  gap: 1rem;
+}
+
+.myspace-folder-input {
+  flex: 1;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-light);
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
+}
+
+.myspace-folder-submit {
+  background: var(--accent-primary);
+  border: none;
+  color: white;
+}
+
+.myspace-layout {
+  display: flex;
+  gap: 2rem;
+  min-height: 50vh;
+}
+
+/* Sidebar */
+.myspace-sidebar {
+  width: 250px;
+  flex-shrink: 0;
+}
+
+.myspace-sidebar-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 1rem 0;
+}
+
+.myspace-sidebar-item {
+  padding: 1rem;
+  cursor: pointer;
+  background: transparent;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.myspace-sidebar-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.myspace-sidebar-item.active {
+  background: var(--accent-primary);
+  color: white;
+}
+
+.myspace-sidebar-item.active:hover {
+  background: var(--accent-primary);
+}
+
+.myspace-sidebar-item.special.active {
+  background: linear-gradient(45deg, #e74c3c, #c0392b);
+}
+
+.myspace-sidebar-item.special.active:hover {
+  background: linear-gradient(45deg, #e74c3c, #c0392b);
+}
+
+.myspace-sidebar-badge {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.myspace-sidebar-count {
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+/* Main content */
+.myspace-content {
+  flex: 1;
+}
+
+.myspace-content-title {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: white;
+}
+
+/* Grid */
+.myspace-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.myspace-card-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Folder picker button */
+.myspace-folder-picker {
+  position: relative;
+}
+
+.myspace-folder-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.myspace-folder-btn:hover {
+  background: rgba(82, 39, 255, 0.2);
+  border-color: rgba(82, 39, 255, 0.4);
+  color: white;
+}
+
+.myspace-folder-btn-badge {
+  background: var(--accent-primary, #5227ff);
+  color: white;
+  border-radius: 10px;
+  padding: 1px 7px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+/* Dropdown popup */
+.myspace-folder-picker-dropdown {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #1e1e2e;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 0.4rem;
+  z-index: 200;
+  box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.6);
+  min-width: 160px;
+}
+
+.myspace-folder-picker-title {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  padding: 0.25rem 0.5rem 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.myspace-folder-picker-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  color: white;
+  font-size: 0.85rem;
+  transition: background 0.15s;
+  user-select: none;
+}
+
+.myspace-folder-picker-item:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.myspace-folder-picker-item input[type="checkbox"] {
+  accent-color: var(--accent-primary, #5227ff);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Empty state */
+.myspace-empty {
+  text-align: center;
+  padding: 4rem;
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+}
+
+.myspace-empty h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.myspace-empty p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.myspace-empty-link {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+/* Error state */
+.myspace-error {
+  color: #e74c3c;
+}

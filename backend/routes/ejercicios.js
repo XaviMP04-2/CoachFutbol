@@ -188,19 +188,40 @@ router.put("/admin/reject/:id", auth, async (req, res) => {
   }
 });
 
-// @route   PUT api/ejercicios/:id/move
-// @desc    Move exercise to folder
+// @route   PUT api/ejercicios/:id/folders
+// @desc    Set the folders an exercise belongs to (multi-folder)
 // @access  Private
-router.put('/:id/move', auth, async (req, res) => {
+router.put('/:id/folders', auth, async (req, res) => {
   try {
-    const { folderId } = req.body; // null for root, or ObjectId
+    const { folderIds } = req.body; // array of folder ObjectIds
     let exercise = await Ejercicio.findById(req.params.id);
     if (!exercise) return res.status(404).json({ msg: 'Exercise not found' });
     if (exercise.userId.toString() !== req.user.id) {
       return res.status(401).json({ msg: 'Not authorized' });
     }
+    exercise.folderIds = Array.isArray(folderIds) ? folderIds : [];
+    await exercise.save();
+    res.json(exercise);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
 
-    exercise.folderId = folderId;
+// @route   PUT api/ejercicios/:id/move (legacy - kept for compatibility)
+router.put('/:id/move', auth, async (req, res) => {
+  try {
+    const { folderId, folderIds } = req.body;
+    let exercise = await Ejercicio.findById(req.params.id);
+    if (!exercise) return res.status(404).json({ msg: 'Exercise not found' });
+    if (exercise.userId.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'Not authorized' });
+    }
+    if (folderIds !== undefined) {
+      exercise.folderIds = Array.isArray(folderIds) ? folderIds : [];
+    } else if (folderId !== undefined) {
+      exercise.folderIds = folderId ? [folderId] : [];
+    }
     await exercise.save();
     res.json(exercise);
   } catch (err) {

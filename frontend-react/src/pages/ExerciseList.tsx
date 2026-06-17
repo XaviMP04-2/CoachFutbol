@@ -79,7 +79,7 @@ const ExerciseList: React.FC = () => {
       return matchSearch && matchType && matchDifficulty && matchAge && matchPlayers && matchObjective;
     });
     setFilteredExercises(filtered);
-  }, [searchTerm, typeFilter, difficultyFilter, ageFilter, playersFilter, exercises]);
+  }, [searchTerm, typeFilter, difficultyFilter, ageFilter, playersFilter, objectiveFilter, exercises]);
 
   const clearFilters = () => {
     setSearchTerm('');
@@ -103,8 +103,6 @@ const ExerciseList: React.FC = () => {
   );
 
 
-
-  // ... (existing effects)
 
   return (
     <div className="page-exercise-list">

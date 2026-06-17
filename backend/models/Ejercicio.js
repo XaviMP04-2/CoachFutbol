@@ -13,7 +13,7 @@ const ejercicioSchema = new mongoose.Schema({
   archivoUrl: { type: String }, // imagen base64
   autor: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' },
-  folderId: { type: mongoose.Schema.Types.ObjectId, ref: 'Folder', default: null },
+  folderIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Folder' }],
   status: { 
     type: String, 
     enum: ['private', 'pending', 'approved'], 

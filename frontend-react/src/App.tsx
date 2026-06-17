@@ -1,6 +1,6 @@
-//import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
+import ProtectedRoute from './components/ProtectedRoute';
 import ExerciseList from './pages/ExerciseList';
 import CreateExercise from './pages/CreateExercise';
 import ExerciseDetail from './pages/ExerciseDetail';
@@ -20,15 +20,24 @@ function App() {
         <Routes>
           <Route path="/" element={<IntroPage />} />
           <Route element={<Layout />}>
+            {/* Rutas publicas */}
             <Route path="/ejercicios" element={<ExerciseList />} />
-            <Route path="/crear" element={<CreateExercise />} />
             <Route path="/ejercicio/:id" element={<ExerciseDetail />} />
             <Route path="/autor/:username" element={<AuthorProfile />} />
             <Route path="/pizarra" element={<TacticalBoard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/my-space" element={<MySpace />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+
+            {/* Rutas privadas */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/crear" element={<CreateExercise />} />
+              <Route path="/my-space" element={<MySpace />} />
+            </Route>
+
+            {/* Solo admin */}
+            <Route element={<ProtectedRoute adminOnly />}>
+              <Route path="/admin" element={<AdminDashboard />} />
+            </Route>
           </Route>
         </Routes>
       </Router>
