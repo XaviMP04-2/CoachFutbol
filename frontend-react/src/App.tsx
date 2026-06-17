@@ -11,6 +11,9 @@ import MySpace from './pages/MySpace';
 import AdminDashboard from './pages/AdminDashboard';
 import AuthorProfile from './pages/AuthorProfile';
 import TacticalBoard from './pages/TacticalBoard';
+import Sessions from './pages/Sessions';
+import SessionDetail from './pages/SessionDetail';
+import PublicSession from './pages/PublicSession';
 import { AuthProvider } from './context/AuthContext';
 
 function App() {
@@ -32,6 +35,8 @@ function App() {
             <Route element={<ProtectedRoute />}>
               <Route path="/crear" element={<CreateExercise />} />
               <Route path="/my-space" element={<MySpace />} />
+              <Route path="/sesiones" element={<Sessions />} />
+              <Route path="/sesiones/:id" element={<SessionDetail />} />
             </Route>
 
             {/* Solo admin */}
@@ -39,6 +44,9 @@ function App() {
               <Route path="/admin" element={<AdminDashboard />} />
             </Route>
           </Route>
+
+          {/* Sesión pública (sin auth) */}
+          <Route path="/sesion-publica/:token" element={<PublicSession />} />
         </Routes>
       </Router>
     </AuthProvider>
@@ -46,3 +54,4 @@ function App() {
 }
 
 export default App;
+

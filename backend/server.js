@@ -18,6 +18,9 @@ app.use('/api/folders', require('./routes/folders'));
 app.use('/api/objectives', require('./routes/objectives'));
 app.use('/api/upload', require('./routes/upload'));
 app.use('/api/users', require('./routes/users'));
+app.use('/api/comments', require('./routes/comments'));
+app.use('/api/sessions', require('./routes/sessions'));
+app.use('/api/templates', require('./routes/templates'));
 
 const path = require("path");
 // Serve static files if needed, or just API for now

@@ -31,12 +31,16 @@ const Layout = () => {
               <span className="nav-icon">✨</span>
               Crear
             </Link>
-            
+
             {isAuthenticated && (
               <>
                 <Link to="/my-space" className={`nav-link ${isActive('/my-space')}`}>
                   <span className="nav-icon">🚀</span>
                   Mi Espacio
+                </Link>
+                <Link to="/sesiones" className={`nav-link ${isActive('/sesiones')}`}>
+                  <span className="nav-icon">📋</span>
+                  Sesiones
                 </Link>
                 {user?.isAdmin && (
                   <Link to="/admin" className={`nav-link ${isActive('/admin')}`}>

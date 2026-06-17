@@ -1,0 +1,112 @@
+.comment-section {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.comment-section-title {
+  font-size: 1.2rem;
+  color: white;
+  margin-bottom: 1.25rem;
+}
+
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.comment-input {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  color: white;
+  font-size: 0.95rem;
+  padding: 0.75rem 1rem;
+  resize: vertical;
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: var(--accent-primary, #5227ff);
+}
+
+.comment-submit {
+  align-self: flex-end;
+  padding: 0.6rem 1.5rem;
+  background: var(--accent-primary, #5227ff);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.comment-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.comment-loading, .comment-empty {
+  color: rgba(255,255,255,0.45);
+  font-size: 0.9rem;
+}
+
+.comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.comment-item {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.comment-username {
+  font-weight: 600;
+  color: var(--accent-primary, #5227ff);
+  font-size: 0.9rem;
+}
+
+.comment-date {
+  color: rgba(255,255,255,0.4);
+  font-size: 0.8rem;
+  flex: 1;
+}
+
+.comment-delete {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.35);
+  cursor: pointer;
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.comment-delete:hover {
+  background: rgba(231,76,60,0.2);
+  color: #e74c3c;
+}
+
+.comment-text {
+  color: rgba(255,255,255,0.8);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0;
+}

@@ -27,6 +27,7 @@ const ExerciseList: React.FC = () => {
   const [ageFilter, setAgeFilter] = useState('');
   const [playersFilter, setPlayersFilter] = useState('');
   const [objectiveFilter, setObjectiveFilter] = useState('');
+  const [tagFilter, setTagFilter] = useState('');
   const [availableObjectives, setAvailableObjectives] = useState<{name: string}[]>([]);
 
   useEffect(() => {
@@ -75,8 +76,9 @@ const ExerciseList: React.FC = () => {
       const matchAge = !ageFilter || (e.edadRecomendada && e.edadRecomendada.toLowerCase().includes(ageFilter.toLowerCase()));
       const matchPlayers = !playersFilter || (e.numeroJugadores >= parseInt(playersFilter));
       const matchObjective = !objectiveFilter || (e.objetivos && e.objetivos.includes(objectiveFilter));
-      
-      return matchSearch && matchType && matchDifficulty && matchAge && matchPlayers && matchObjective;
+      const matchTag = !tagFilter || (e.tags && e.tags.includes(tagFilter));
+
+      return matchSearch && matchType && matchDifficulty && matchAge && matchPlayers && matchObjective && matchTag;
     });
     setFilteredExercises(filtered);
   }, [searchTerm, typeFilter, difficultyFilter, ageFilter, playersFilter, objectiveFilter, exercises]);
@@ -88,7 +90,10 @@ const ExerciseList: React.FC = () => {
     setAgeFilter('');
     setPlayersFilter('');
     setObjectiveFilter('');
+    setTagFilter('');
   };
+
+  const allTags = Array.from(new Set(exercises.flatMap(e => e.tags ?? []))).sort();
 
   if (loading) return (
     <div className="page-exercise-list" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -199,6 +204,32 @@ const ExerciseList: React.FC = () => {
               ))}
             </select>
           </div>
+          {allTags.length > 0 && (
+            <div className="filter-item">
+              <label>Etiquetas</label>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginTop: '0.25rem' }}>
+                {allTags.map(tag => (
+                  <button
+                    key={tag}
+                    onClick={() => setTagFilter(tagFilter === tag ? '' : tag)}
+                    style={{
+                      background: tagFilter === tag ? 'rgba(243,156,18,0.25)' : 'rgba(243,156,18,0.08)',
+                      border: `1px solid ${tagFilter === tag ? '#f39c12' : 'rgba(243,156,18,0.3)'}`,
+                      borderRadius: '20px',
+                      padding: '0.2rem 0.55rem',
+
+                    fontSize: '0.78rem',
+                      color: '#f39c12',
+                      cursor: 'pointer',
+                      fontWeight: tagFilter === tag ? 700 : 400
+                    }}
+                  >
+                    #{tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
         </aside>
 
         {/* Main Content */}
@@ -232,3 +263,6 @@ const ExerciseList: React.FC = () => {
 };
 
 export default ExerciseList;
+
+
+

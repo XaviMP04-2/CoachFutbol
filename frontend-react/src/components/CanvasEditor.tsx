@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { CanvasElement } from '../types';
+import type { CanvasElement, PizarraTemplate } from '../types';
+import { useAuth } from '../context/AuthContext';
+import API_URL from '../config';
 import { LOGICAL_WIDTH, LOGICAL_HEIGHT } from './canvas/constants';
 import { drawElement, drawSelectionOverlay } from './canvas/drawElement';
 import { useCanvasHistory } from '../hooks/useCanvasHistory';
@@ -29,6 +31,7 @@ interface PendingPlacement {
 const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialElements, onUpdateElements }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const { token, isAuthenticated } = useAuth();
 
   const [elements, setElements] = useState<CanvasElement[]>(initialElements || []);
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
@@ -54,6 +57,12 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
   const [selectedShapeColor, setSelectedShapeColor] = useState('#3498db');
   const [selectedShapeOpacity, setSelectedShapeOpacity] = useState(0.3);
   const [selectedLineWidth, setSelectedLineWidth] = useState(4);
+
+  // Templates
+  const [showSaveTpl, setShowSaveTpl] = useState(false);
+  const [showLoadTpl, setShowLoadTpl] = useState(false);
+  const [tplName, setTplName] = useState('');
+  const [templates, setTemplates] = useState<PizarraTemplate[]>([]);
 
   // Live preview ref — tracks mouse position while drawing (doesn't trigger re-render)
   const dragPreviewRef = useRef<{ x: number; y: number } | null>(null);
@@ -482,6 +491,39 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [selectedElementId, isEditingText, elements, historyIndex, history]);
 
+  const saveTemplate = async () => {
+    if (!tplName.trim()) return;
+    const preview = canvasRef.current?.toDataURL('image/png');
+    await fetch(`${API_URL}/api/templates`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-auth-token': token || '' },
+      body: JSON.stringify({ name: tplName.trim(), elements, preview })
+    });
+    setTplName('');
+    setShowSaveTpl(false);
+  };
+
+  const loadTemplates = async () => {
+    const res = await fetch(`${API_URL}/api/templates`, {
+      headers: { 'x-auth-token': token || '' }
+    });
+    const data: PizarraTemplate[] = await res.json();
+    setTemplates(data);
+    setShowLoadTpl(true);
+  };
+
+  const applyTemplate = async (id: string) => {
+    const res = await fetch(`${API_URL}/api/templates/${id}`, {
+      headers: { 'x-auth-token': token || '' }
+    });
+    const tpl: PizarraTemplate = await res.json();
+    if (tpl.elements) {
+      setElements(tpl.elements);
+      saveToHistory(tpl.elements);
+    }
+    setShowLoadTpl(false);
+  };
+
   const selectedElement = elements.find(e => e.id === selectedElementId) ?? null;
 
   return (
@@ -574,6 +616,60 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
         onDelete={handleDelete}
         hasSelection={!!selectedElementId}
       />
+
+      {/* Template buttons — outside overflow:hidden, top bar */}
+      {isAuthenticated && (
+        <div style={{ position: 'absolute', top: '0.75rem', left: '50%', transform: 'translateX(-50%)', display: 'flex', gap: '0.5rem', zIndex: 2100 }}>
+          <button onClick={loadTemplates} style={{ background: 'rgba(52,73,94,0.95)', border: '1px solid #566573', color: '#ecf0f1', borderRadius: '6px', padding: '0.35rem 0.85rem', fontSize: '0.82rem', cursor: 'pointer', backdropFilter: 'blur(4px)' }}>
+            📂 Cargar plantilla
+          </button>
+          <button onClick={() => setShowSaveTpl(true)} style={{ background: 'rgba(39,174,96,0.9)', border: '1px solid #27ae60', color: '#fff', borderRadius: '6px', padding: '0.35rem 0.85rem', fontSize: '0.82rem', cursor: 'pointer' }}>
+            💾 Guardar plantilla
+          </button>
+        </div>
+      )}
+
+      {/* Save template modal */}
+      {showSaveTpl && (
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2200 }}>
+          <div style={{ background: '#1e2a38', border: '1px solid #34495e', borderRadius: '10px', padding: '1.5rem', minWidth: '300px', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <h3 style={{ margin: 0, color: '#ecf0f1', fontSize: '1rem' }}>Guardar como plantilla</h3>
+            <input
+              type="text"
+              placeholder="Nombre de la plantilla"
+              value={tplName}
+              onChange={e => setTplName(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && saveTemplate()}
+              style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #34495e', background: '#2c3e50', color: '#ecf0f1', outline: 'none' }}
+              autoFocus
+            />
+            <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+              <button onClick={() => setShowSaveTpl(false)} style={{ padding: '0.4rem 1rem', borderRadius: '6px', border: '1px solid #566573', background: 'transparent', color: '#bdc3c7', cursor: 'pointer' }}>Cancelar</button>
+              <button onClick={saveTemplate} style={{ padding: '0.4rem 1rem', borderRadius: '6px', border: 'none', background: '#27ae60', color: '#fff', cursor: 'pointer', fontWeight: 600 }}>Guardar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Load template modal */}
+      {showLoadTpl && (
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.6)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 2200 }}>
+          <div style={{ background: '#1e2a38', border: '1px solid #34495e', borderRadius: '10px', padding: '1.5rem', minWidth: '340px', maxHeight: '70vh', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            <h3 style={{ margin: 0, color: '#ecf0f1', fontSize: '1rem' }}>Cargar plantilla</h3>
+            <div style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+              {templates.length === 0 ? (
+                <p style={{ color: '#7f8c8d', textAlign: 'center', margin: '1rem 0' }}>No tienes plantillas guardadas.</p>
+              ) : templates.map(t => (
+                <div key={t._id} onClick={() => applyTemplate(t._id)} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#2c3e50', borderRadius: '8px', padding: '0.5rem 0.75rem', cursor: 'pointer', border: '1px solid #34495e' }}>
+                  {t.preview && <img src={t.preview} alt={t.name} style={{ width: '60px', height: '40px', objectFit: 'cover', borderRadius: '4px', border: '1px solid #34495e' }} />}
+                  <span style={{ color: '#ecf0f1', fontSize: '0.9rem' }}>{t.name}</span>
+                </div>
+              ))}
+            </div>
+            <button onClick={() => setShowLoadTpl(false)} style={{ padding: '0.4rem 1rem', borderRadius: '6px', border: '1px solid #566573', background: 'transparent', color: '#bdc3c7', cursor: 'pointer', alignSelf: 'flex-end' }}>Cerrar</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

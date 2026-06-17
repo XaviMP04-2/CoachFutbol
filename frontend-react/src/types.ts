@@ -12,6 +12,8 @@ export interface Exercise {
   autor: string;
   archivoUrl?: string;
   folderIds?: string[];
+  tags?: string[];
+  viewCount?: number;
 }
 
 export interface CanvasElement {
@@ -37,4 +39,38 @@ export interface CanvasElement {
   fillColor?: string;
   opacity?: number;
   strokeWidth?: number;
+}
+
+export interface Comment {
+  _id: string;
+  exerciseId: string;
+  userId: string;
+  username: string;
+  text: string;
+  createdAt: string;
+}
+
+export interface SessionExercise {
+  exerciseId: Exercise | string;
+  duration: number;
+  order: number;
+  notes: string;
+}
+
+export interface TrainingSession {
+  _id: string;
+  name: string;
+  description: string;
+  userId: string;
+  exercises: SessionExercise[];
+  shareToken: string;
+  createdAt: string;
+}
+
+export interface PizarraTemplate {
+  _id: string;
+  name: string;
+  preview?: string;
+  createdAt: string;
+  elements?: CanvasElement[];
 }

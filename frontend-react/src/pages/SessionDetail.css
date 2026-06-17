@@ -1,0 +1,126 @@
+.session-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.session-back-btn {
+  background: none;
+  border: none;
+  color: var(--accent-primary, #5227ff);
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0;
+}
+
+.session-detail-actions { display: flex; gap: 0.75rem; }
+
+.session-share-btn { white-space: nowrap; }
+
+.session-detail-title {
+  font-size: 2rem;
+  color: white;
+  margin: 0 0 0.5rem;
+}
+
+.session-detail-desc {
+  color: rgba(255,255,255,0.55);
+  font-size: 0.95rem;
+  margin: 0 0 1.25rem;
+}
+
+.session-detail-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.6);
+}
+
+.session-stat { display: flex; align-items: center; gap: 0.4rem; }
+
+.session-share-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(0,0,0,0.2);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.session-share-label {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+}
+
+.session-share-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.8);
+  font-size: 0.85rem;
+  min-width: 200px;
+  cursor: pointer;
+}
+
+.session-share-input:focus { outline: none; }
+
+.session-detail-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  color: rgba(255,255,255,0.55);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.session-exercises-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.session-exercise-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.session-exercise-duration {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+  padding: 0 0.25rem;
+}
+
+.session-exercise-notes {
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.5);
+  font-style: italic;
+  padding: 0 0.25rem;
+}
+
+.session-exercise-remove {
+  width: 100%;
+  padding: 0.4rem;
+  background: rgba(231,76,60,0.1);
+  border: 1px solid rgba(231,76,60,0.25);
+  border-radius: 8px;
+  color: #e74c3c;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.session-exercise-remove:hover {
+  background: rgba(231,76,60,0.25);
+}

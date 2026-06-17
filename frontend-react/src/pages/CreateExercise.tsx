@@ -25,9 +25,11 @@ const CreateExercise: React.FC = () => {
     duracion: '',
     material: '',
     numeroJugadores: 1,
-    autor: '', 
+    autor: '',
     archivoUrl: ''
   });
+  const [tags, setTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState('');
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -98,6 +100,7 @@ const CreateExercise: React.FC = () => {
       material: formData.material.split(',').map(s => s.trim()),
       numeroJugadores: Number(formData.numeroJugadores),
       autor: formData.autor || user?.username || 'Coach',
+      tags,
       isPublic
     };
 
@@ -174,6 +177,30 @@ const CreateExercise: React.FC = () => {
             <label htmlFor="numeroJugadores">Número de jugadores:</label>
             <input type="number" id="numeroJugadores" name="numeroJugadores" min="1" step="1" value={formData.numeroJugadores} onChange={handleChange} />
 
+            <label>Etiquetas:</label>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.4rem' }}>
+              {tags.map(t => (
+                <span key={t} style={{ background: 'rgba(243,156,18,0.15)', border: '1px solid rgba(243,156,18,0.35)', borderRadius: '20px', padding: '0.2rem 0.6rem', fontSize: '0.82rem', color: '#f39c12', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  #{t}
+                  <button type="button" onClick={() => setTags(prev => prev.filter(x => x !== t))} style={{ background: 'none', border: 'none', color: '#f39c12', cursor: 'pointer', padding: 0, lineHeight: 1, fontSize: '0.9rem' }}>✕</button>
+                </span>
+              ))}
+            </div>
+            <input
+              type="text"
+              placeholder="Escribe una etiqueta y pulsa Enter"
+              value={tagInput}
+              onChange={e => setTagInput(e.target.value)}
+              onKeyDown={e => {
+                if ((e.key === 'Enter' || e.key === ',') && tagInput.trim()) {
+                  e.preventDefault();
+                  const t = tagInput.trim().toLowerCase().replace(/\s+/g, '-');
+                  if (!tags.includes(t)) setTags(prev => [...prev, t]);
+                  setTagInput('');
+                }
+              }}
+            />
+
             <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
               <input 
                 type="checkbox" 
@@ -237,3 +264,6 @@ const CreateExercise: React.FC = () => {
 };
 
 export default CreateExercise;
+
+
+

@@ -14,6 +14,8 @@ const ejercicioSchema = new mongoose.Schema({
   autor: { type: String, required: true },
   userId: { type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' },
   folderIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Folder' }],
+  tags: [{ type: String }],
+  viewCount: { type: Number, default: 0 },
   status: { 
     type: String, 
     enum: ['private', 'pending', 'approved'], 

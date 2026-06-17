@@ -34,15 +34,14 @@ router.get("/my-space", auth, async (req, res) => {
 // @access  Public (but might need check if private and not owner)
 router.get("/:id", async (req, res) => {
   try {
-    const ejercicio = await Ejercicio.findById(req.params.id);
+    const ejercicio = await Ejercicio.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { viewCount: 1 } },
+      { new: true }
+    );
     if (!ejercicio) {
       return res.status(404).json({ error: "Ejercicio no encontrado" });
     }
-    
-    // Optional: Check visibility if private
-    // For now, we allow viewing if you have the ID (link sharing), 
-    // or we could restrict it. Let's keep it simple for now.
-    
     res.json(ejercicio);
   } catch (err) {
     res.status(500).json({ error: "Error al obtener el ejercicio" });
