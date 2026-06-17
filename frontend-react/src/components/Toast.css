@@ -52,3 +52,14 @@
   transition: color 0.15s;
 }
 .toast-close:hover { color: white; }
+
+[data-theme="light"] .toast {
+  background: #ffffff;
+  border-color: rgba(0,0,0,0.12);
+  color: #1a202c;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+[data-theme="light"] .toast.success { border-left-color: #2ecc71; }
+[data-theme="light"] .toast.error   { border-left-color: #e74c3c; }
+[data-theme="light"] .toast.warning { border-left-color: #f39c12; }
+[data-theme="light"] .toast.info    { border-left-color: #3498db; }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import type { Exercise } from '../types';
 import ExerciseCard from '../components/ExerciseCard';
@@ -30,6 +30,7 @@ const ExerciseList: React.FC = () => {
   const [objectiveFilter, setObjectiveFilter] = useState('');
   const [tagFilter, setTagFilter] = useState('');
   const [showFilterDrawer, setShowFilterDrawer] = useState(false);
+  const searchRef = useRef<HTMLInputElement>(null);
   const [availableObjectives, setAvailableObjectives] = useState<{name: string}[]>([]);
 
   useEffect(() => {
@@ -84,6 +85,22 @@ const ExerciseList: React.FC = () => {
     });
     setFilteredExercises(filtered);
   }, [searchTerm, typeFilter, difficultyFilter, ageFilter, playersFilter, objectiveFilter, exercises]);
+
+
+  // Press "/" to focus search
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === '/' && document.activeElement?.tagName !== 'INPUT' && document.activeElement?.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        searchRef.current?.focus();
+      }
+      if (e.key === 'Escape') {
+        searchRef.current?.blur();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, []);
 
   const clearFilters = () => {
     setSearchTerm('');
@@ -385,11 +402,13 @@ const ExerciseList: React.FC = () => {
         <main className="exercises-content">
           {/* Search Bar */}
           <div className="search-container">
+            <div ref={searchRef as React.RefObject<HTMLDivElement>} tabIndex={-1} onFocus={() => { const inp = (searchRef.current as HTMLElement)?.querySelector('input'); inp?.focus(); }}>
             <GrumpySearch 
                 value={searchTerm}
                 onChange={setSearchTerm}
-                placeholder="Buscar ejercicios por título, autor..."
+                placeholder='Buscar ejercicios por título, autor... (presiona "/" para buscar)'
             />
+            </div>
           </div>
 
           {/* Grid */}

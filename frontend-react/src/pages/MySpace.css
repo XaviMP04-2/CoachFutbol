@@ -93,7 +93,7 @@
 }
 
 .myspace-sidebar-item:hover {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
 }
 
 .myspace-sidebar-item.active {
@@ -163,10 +163,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.45rem 0.75rem;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
-  color: rgba(255, 255, 255, 0.75);
+  color: rgba(var(--surface), 0.75);
   font-size: 0.82rem;
   cursor: pointer;
   transition: all 0.2s;

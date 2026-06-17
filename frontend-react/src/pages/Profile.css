@@ -13,8 +13,8 @@
   align-items: center;
   gap: 1.5rem;
   padding: 1.5rem;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 20px;
 }
 
@@ -36,13 +36,13 @@
 .profile-name {
   font-size: 1.4rem;
   font-weight: 700;
-  color: #ecf0f1;
+  color: var(--text-primary);
   margin: 0 0 0.2rem;
 }
 
 .profile-email {
   font-size: 0.9rem;
-  color: rgba(255,255,255,0.45);
+  color: var(--text-muted);
   margin: 0 0 0.4rem;
 }
 
@@ -57,8 +57,8 @@
 
 /* Sections */
 .profile-section {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.07);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
   border-radius: 16px;
   padding: 1.5rem;
 }
@@ -66,7 +66,7 @@
 .profile-section-title {
   font-size: 0.85rem;
   font-weight: 600;
-  color: rgba(255,255,255,0.45);
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   margin: 0 0 1.25rem;
@@ -80,7 +80,7 @@
 }
 
 .profile-stat-card {
-  background: rgba(255,255,255,0.05);
+  background: rgba(var(--surface), 0.05);
   border-radius: 12px;
   padding: 1rem;
   text-align: center;
@@ -95,7 +95,7 @@
 
 .profile-stat-label {
   font-size: 0.8rem;
-  color: rgba(255,255,255,0.45);
+  color: var(--text-muted);
   margin-top: 0.3rem;
 }
 
@@ -111,18 +111,18 @@
   align-items: center;
   justify-content: space-between;
   padding: 0.9rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid var(--border-light);
 }
 .profile-setting-row:last-child { border-bottom: none; }
 
 .profile-setting-label {
   font-size: 0.95rem;
-  color: #ecf0f1;
+  color: var(--text-primary);
   font-weight: 500;
 }
 .profile-setting-desc {
   font-size: 0.8rem;
-  color: rgba(255,255,255,0.35);
+  color: var(--text-muted);
   margin-top: 0.15rem;
 }
 
@@ -138,7 +138,7 @@
 .toggle-slider {
   position: absolute;
   inset: 0;
-  background: rgba(255,255,255,0.12);
+  background: rgba(var(--surface), 0.12);
   border-radius: 24px;
   cursor: pointer;
   transition: background 0.2s;
@@ -156,9 +156,9 @@
 .toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
 
 .profile-select {
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.12);
-  color: #ecf0f1;
+  background: var(--bg-input);
+  border: 1px solid var(--border-input);
+  color: var(--text-primary);
   padding: 0.35rem 0.75rem;
   border-radius: 8px;
   font-size: 0.88rem;

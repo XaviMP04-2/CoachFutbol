@@ -12,10 +12,10 @@
 }
 
 .exercise-card-premium {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--bg-card);
   border-radius: 20px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-light);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   height: 100%;
   display: flex;
@@ -27,7 +27,7 @@
   transform: translateY(-8px);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
   border-color: rgba(82, 39, 255, 0.4);
-  background: rgba(255, 255, 255, 0.08);
+  background: var(--bg-card-hover);
 }
 
 .card-image-container {
@@ -185,3 +185,54 @@
   100% { transform: scale(1); }
 }
 
+
+/* Staggered entrance delays — up to 12 cards */
+.exercises-grid .exercise-card-link:nth-child(1)  { animation-delay: 0.00s; }
+.exercises-grid .exercise-card-link:nth-child(2)  { animation-delay: 0.05s; }
+.exercises-grid .exercise-card-link:nth-child(3)  { animation-delay: 0.10s; }
+.exercises-grid .exercise-card-link:nth-child(4)  { animation-delay: 0.15s; }
+.exercises-grid .exercise-card-link:nth-child(5)  { animation-delay: 0.20s; }
+.exercises-grid .exercise-card-link:nth-child(6)  { animation-delay: 0.25s; }
+.exercises-grid .exercise-card-link:nth-child(7)  { animation-delay: 0.30s; }
+.exercises-grid .exercise-card-link:nth-child(8)  { animation-delay: 0.35s; }
+.exercises-grid .exercise-card-link:nth-child(9)  { animation-delay: 0.38s; }
+.exercises-grid .exercise-card-link:nth-child(10) { animation-delay: 0.41s; }
+.exercises-grid .exercise-card-link:nth-child(11) { animation-delay: 0.44s; }
+.exercises-grid .exercise-card-link:nth-child(12) { animation-delay: 0.47s; }
+
+/* ── Light mode overrides ────────────────────────────── */
+[data-theme="light"] .exercise-card-premium {
+  background: #ffffff;
+  border-color: #dde4ef;
+  box-shadow: var(--card-shadow, 0 1px 3px rgba(0,0,0,0.07), 0 4px 14px rgba(82,39,255,0.06));
+}
+
+[data-theme="light"] .exercise-card-premium:hover {
+  box-shadow: var(--card-shadow-hover, 0 8px 30px rgba(82,39,255,0.14));
+  border-color: rgba(82,39,255,0.3);
+  background: #ffffff;
+}
+
+[data-theme="light"] .card-image-container {
+  background: #e8eef6;
+}
+
+[data-theme="light"] .card-placeholder {
+  background: linear-gradient(135deg, #dde8f5, #e8eef8);
+}
+
+[data-theme="light"] .card-content-premium h3 {
+  color: #1e293b;
+}
+
+[data-theme="light"] .card-author,
+[data-theme="light"] .card-description,
+[data-theme="light"] .card-stats {
+  color: #64748b;
+}
+
+[data-theme="light"] .view-more {
+  color: #5227FF;
+  background: rgba(82,39,255,0.06);
+  border-top-color: #dde4ef;
+}

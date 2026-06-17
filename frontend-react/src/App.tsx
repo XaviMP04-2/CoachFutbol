@@ -17,9 +17,11 @@ import PublicSession from './pages/PublicSession';
 import Profile from './pages/Profile';
 import { AuthProvider } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
+import { ThemeProvider } from './context/ThemeContext';
 
 function App() {
   return (
+    <ThemeProvider>
     <AuthProvider>
       <ToastProvider>
         <Router>
@@ -55,6 +57,7 @@ function App() {
         </Router>
       </ToastProvider>
     </AuthProvider>
+    </ThemeProvider>
   );
 }
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { useTheme } from '../context/ThemeContext';
 import API_URL from '../config';
 import './Profile.css';
 
@@ -14,14 +15,13 @@ interface ProfileStats {
 const Profile: React.FC = () => {
   const { user, token, logout, isAuthenticated } = useAuth();
   const { showToast } = useToast();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [stats, setStats] = useState<ProfileStats>({ exerciseCount: 0, totalViews: 0, sessionCount: 0 });
   const [loadingStats, setLoadingStats] = useState(true);
 
   // Settings state
   const [notifEnabled, setNotifEnabled] = useState(() => localStorage.getItem('notifEnabled') !== 'false');
-  const [theme, setTheme] = useState(() => localStorage.getItem('profileTheme') || 'dark');
-
   useEffect(() => {
     if (!isAuthenticated) { navigate('/login'); return; }
   }, [isAuthenticated, navigate]);
@@ -50,7 +50,6 @@ const Profile: React.FC = () => {
 
   const saveSettings = () => {
     localStorage.setItem('notifEnabled', String(notifEnabled));
-    localStorage.setItem('profileTheme', theme);
     showToast('Configuración guardada');
   };
 
@@ -107,16 +106,12 @@ const Profile: React.FC = () => {
           <div className="profile-setting-row">
             <div>
               <div className="profile-setting-label">Tema</div>
-              <div className="profile-setting-desc">Apariencia de la interfaz</div>
+              <div className="profile-setting-desc">{theme === 'dark' ? '🌙 Modo oscuro activo' : '☀️ Modo claro activo'}</div>
             </div>
-            <select
-              value={theme}
-              onChange={e => setTheme(e.target.value)}
-              className="profile-select"
-            >
-              <option value="dark">Oscuro</option>
-              <option value="light">Claro (próx.)</option>
-            </select>
+            <label className="toggle-switch">
+              <input type="checkbox" checked={theme === 'light'} onChange={toggleTheme} />
+              <span className="toggle-slider" />
+            </label>
           </div>
         </div>
         <button className="profile-save-btn" onClick={saveSettings}>

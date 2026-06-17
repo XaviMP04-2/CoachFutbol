@@ -1,155 +1,223 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import LiquidEther from '../components/LiquidEther';
+import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import './Intro.css';
+
+const FEATURES = [
+  {
+    icon: '⚽',
+    title: 'Biblioteca de Ejercicios',
+    desc: 'Cientos de ejercicios clasificados por tipo, dificultad, edad y objetivos. Filtra, busca y descubre.',
+    size: 'large',
+    accent: '#5227FF',
+  },
+  {
+    icon: '🎯',
+    title: 'Pizarra Táctica',
+    desc: 'Diseña jugadas con herramientas profesionales. Guarda plantillas y exporta como imagen.',
+    size: 'normal',
+    accent: '#2ecc71',
+  },
+  {
+    icon: '📋',
+    title: 'Sesiones de Entrenamiento',
+    desc: 'Organiza ejercicios en sesiones completas con duración y notas.',
+    size: 'normal',
+    accent: '#e67e22',
+  },
+  {
+    icon: '📄',
+    title: 'Exportar a PDF',
+    desc: 'Genera fichas profesionales con imagen, descripción y objetivos en un solo clic.',
+    size: 'normal',
+    accent: '#e74c3c',
+  },
+  {
+    icon: '🚀',
+    title: 'Mi Espacio',
+    desc: 'Tus ejercicios privados organizados en carpetas. Comparte lo que quieras.',
+    size: 'large',
+    accent: '#FF9FFC',
+  },
+];
+
+const STATS = [
+  { value: '200+', label: 'Ejercicios' },
+  { value: '5+', label: 'Herramientas' },
+  { value: '100%', label: 'Gratis' },
+  { value: '∞', label: 'Posibilidades' },
+];
 
 const Intro: React.FC = () => {
   const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+  const featuresRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  // Intersection observer for scroll animations
+  useEffect(() => {
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      }),
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('.anim-in').forEach(el => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
 
   return (
-    <div style={{ width: '100vw', height: '100vh', position: 'relative', overflow: 'hidden', fontFamily: "'Inter', system-ui, -apple-system, sans-serif" }}>
-      {/* Background Effect */}
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
-        <LiquidEther
-            colors={['#0f0c29', '#302b63', '#24243e']} // Deep premium colors
-            mouseForce={25}
-            cursorSize={120}
-            isViscous={false}
-            viscous={30}
-            iterationsViscous={32}
-            iterationsPoisson={32}
-            resolution={0.6} // Slightly higher resolution for crispness
-            isBounce={false}
-            autoDemo={true}
-            autoSpeed={0.4} // Slower, more elegant movement
-            autoIntensity={1.8}
-            takeoverDuration={0.25}
-            autoResumeDelay={3000}
-            autoRampDuration={0.6}
-        />
-      </div>
+    <div className="intro-root">
+      {/* Sticky minimal nav */}
+      <nav className={`intro-nav${scrolled ? ' scrolled' : ''}`}>
+        <div className="intro-nav-brand">
+          <img src="/img/favicon-proyecto.png" alt="logo" className="intro-nav-logo" />
+          <span>COACHFUTBOL</span>
+        </div>
+        <div className="intro-nav-links">
+          <a href="#features">Características</a>
+          <Link to="/ejercicios" className="intro-nav-cta">Entrar →</Link>
+        </div>
+      </nav>
 
-      {/* Content Overlay */}
-      <div style={{ 
-          position: 'absolute', 
-          top: 0, 
-          left: 0, 
-          width: '100%', 
-          height: '100%', 
-          zIndex: 10, 
-          display: 'flex', 
-          flexDirection: 'column', 
-          justifyContent: 'center', 
-          alignItems: 'center',
-          pointerEvents: 'none',
-          background: 'radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.4) 100%)' // Subtle vignette
-      }}>
-        <div style={{ 
-            textAlign: 'center', 
-            pointerEvents: 'auto',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '1.5rem',
-            padding: '2rem',
-            // Minimalist glass effect, no heavy box
-            backdropFilter: 'blur(2px)', 
-        }}>
-            {/* Logo - High Res */}
-            <div style={{ 
-                width: '180px', 
-                height: '180px', 
-                background: 'rgba(255, 255, 255, 0.05)',
-                borderRadius: '50%',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                boxShadow: '0 0 40px rgba(82, 39, 255, 0.2)',
-                marginBottom: '1rem',
-                border: '1px solid rgba(255, 255, 255, 0.1)'
-            }}>
-                <img 
-                    src="/img/favicon-proyecto-192.png" 
-                    alt="CoachFutbol Logo" 
-                    style={{ width: '120px', height: '120px', objectFit: 'contain', filter: 'drop-shadow(0 0 15px rgba(255,255,255,0.3))' }} 
-                />
-            </div>
+      {/* ─── HERO ──────────────────────────────────────────────── */}
+      <section className="intro-hero">
+        {/* Animated aurora orbs */}
+        <div className="aurora-wrap" aria-hidden>
+          <div className="orb orb-1" />
+          <div className="orb orb-2" />
+          <div className="orb orb-3" />
+          <div className="orb orb-4" />
+        </div>
 
-            {/* Title */}
-            <h1 style={{ 
-                fontSize: '5rem', 
-                fontWeight: '800', 
-                color: 'white', 
-                margin: 0,
-                letterSpacing: '-0.02em',
-                background: 'linear-gradient(to bottom right, #ffffff, #a5a5a5)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                textShadow: '0 10px 30px rgba(0,0,0,0.5)'
-            }}>
-                COACHFUTBOL
-            </h1>
+        {/* Dot grid overlay */}
+        <div className="dot-grid" aria-hidden />
 
-            {/* Tagline */}
-            <p style={{
-                fontSize: '1.5rem',
-                color: 'rgba(255, 255, 255, 0.8)',
-                margin: 0,
-                fontWeight: '300',
-                letterSpacing: '0.05em',
-                maxWidth: '600px',
-                lineHeight: '1.5'
-            }}>
-                La herramienta definitiva para entrenadores profesionales.
-            </p>
+        <div className="hero-content">
+          {/* Badge */}
+          <div className="hero-badge anim-in">
+            <span className="badge-dot" />
+            Plataforma profesional para entrenadores de fútbol
+          </div>
 
-            {/* Button */}
-            <button 
-                onClick={() => navigate('/ejercicios')}
-                style={{
-                    marginTop: '2rem',
-                    background: 'transparent',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    padding: '1rem 4rem',
-                    fontSize: '1.2rem',
-                    color: 'white',
-                    borderRadius: '50px',
-                    cursor: 'pointer',
-                    fontWeight: '500',
-                    letterSpacing: '0.1em',
-                    textTransform: 'uppercase',
-                    transition: 'all 0.3s ease',
-                    backdropFilter: 'blur(5px)',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
-                }}
-                onMouseOver={e => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                    e.currentTarget.style.borderColor = 'white';
-                    e.currentTarget.style.transform = 'translateY(-2px)';
-                    e.currentTarget.style.boxShadow = '0 10px 30px rgba(82, 39, 255, 0.4)';
-                }}
-                onMouseOut={e => {
-                    e.currentTarget.style.background = 'transparent';
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.2)';
-                }}
-            >
-                Entrar
+          {/* Headline */}
+          <h1 className="hero-headline anim-in">
+            Entrena.<br />
+            <span className="gradient-text">Planifica.</span><br />
+            Evoluciona.
+          </h1>
+
+          <p className="hero-sub anim-in">
+            Diseña ejercicios con pizarra táctica interactiva, organiza sesiones completas
+            y exporta fichas profesionales en PDF. Todo en un solo lugar.
+          </p>
+
+          {/* CTAs */}
+          <div className="hero-ctas anim-in">
+            <button className="btn-primary" onClick={() => navigate('/ejercicios')}>
+              <span>Explorar ejercicios</span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
             </button>
+            <button className="btn-ghost" onClick={() => navigate('/pizarra')}>
+              Ver la pizarra →
+            </button>
+          </div>
+
+          {/* Social proof */}
+          <p className="hero-proof anim-in">
+            Gratis · Sin registro requerido para explorar · Hecho por entrenadores, para entrenadores
+          </p>
         </div>
-        
-        {/* Footer / Credits */}
-        <div style={{
-            position: 'absolute',
-            bottom: '2rem',
-            color: 'rgba(255, 255, 255, 0.3)',
-            fontSize: '0.9rem',
-            fontWeight: '300',
-            letterSpacing: '0.1em'
-        }}>
-            DESIGNED FOR EXCELLENCE
+
+        {/* Scroll indicator */}
+        <div className="scroll-hint" onClick={() => featuresRef.current?.scrollIntoView({ behavior: 'smooth' })}>
+          <div className="scroll-mouse"><div className="scroll-dot" /></div>
+          <span>Descubre más</span>
         </div>
-      </div>
+      </section>
+
+      {/* ─── STATS ─────────────────────────────────────────────── */}
+      <section className="intro-stats anim-in" ref={statsRef}>
+        {STATS.map(s => (
+          <div key={s.label} className="stat-item">
+            <div className="stat-value">{s.value}</div>
+            <div className="stat-label">{s.label}</div>
+          </div>
+        ))}
+      </section>
+
+      {/* ─── FEATURES ──────────────────────────────────────────── */}
+      <section className="intro-features" id="features" ref={featuresRef}>
+        <div className="section-header anim-in">
+          <div className="section-tag">Herramientas</div>
+          <h2 className="section-title">Todo lo que necesitas<br /><span className="gradient-text">en una plataforma</span></h2>
+          <p className="section-sub">Desde el diseño del ejercicio hasta la sesión completa, CoachFutbol te acompaña en cada paso.</p>
+        </div>
+
+        <div className="features-bento anim-in">
+          {FEATURES.map((f, i) => (
+            <div key={f.title} className={`feature-card fc-${i + 1}${f.size === 'large' ? ' fc-large' : ''}`} style={{ '--accent': f.accent } as React.CSSProperties}>
+              <div className="fc-icon">{f.icon}</div>
+              <h3 className="fc-title">{f.title}</h3>
+              <p className="fc-desc">{f.desc}</p>
+              <div className="fc-glow" />
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── HOW IT WORKS ──────────────────────────────────────── */}
+      <section className="intro-how">
+        <div className="section-header anim-in">
+          <div className="section-tag">Flujo de trabajo</div>
+          <h2 className="section-title">Simple por diseño</h2>
+        </div>
+        <div className="how-steps anim-in">
+          {[
+            { n: '01', title: 'Crea tu ejercicio', desc: 'Usa la pizarra táctica para diseñar el esquema y rellena la ficha.' },
+            { n: '02', title: 'Organiza en sesiones', desc: 'Agrupa ejercicios en sesiones con duración total y progresión.' },
+            { n: '03', title: 'Comparte o exporta', desc: 'Genera PDFs profesionales o comparte el enlace directo.' },
+          ].map(step => (
+            <div key={step.n} className="how-step">
+              <div className="step-num">{step.n}</div>
+              <h3 className="step-title">{step.title}</h3>
+              <p className="step-desc">{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ─── CTA FINAL ─────────────────────────────────────────── */}
+      <section className="intro-final-cta anim-in">
+        <div className="final-cta-orb" />
+        <div className="section-tag">Empieza hoy</div>
+        <h2 className="final-cta-title">¿Listo para mejorar<br />tus entrenamientos?</h2>
+        <p className="final-cta-sub">Únete gratuitamente y lleva tu metodología al siguiente nivel.</p>
+        <div className="hero-ctas">
+          <button className="btn-primary btn-lg" onClick={() => navigate('/register')}>
+            Crear cuenta gratis
+          </button>
+          <button className="btn-ghost" onClick={() => navigate('/ejercicios')}>
+            Explorar sin cuenta →
+          </button>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="intro-footer">
+        <div className="intro-footer-brand">
+          <img src="/img/favicon-proyecto.png" alt="logo" style={{ height: '24px' }} />
+          <span>COACHFUTBOL</span>
+        </div>
+        <p className="intro-footer-copy">© 2025 CoachFutbol · Diseñado para entrenadores de fútbol</p>
+      </footer>
     </div>
   );
 };

@@ -1,4 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
+import ScrollToTop from './ScrollToTop';
 import { useAuth } from '../context/AuthContext';
 
 const Layout = () => {
@@ -9,6 +10,7 @@ const Layout = () => {
 
   return (
     <div className="app-container">
+      <ScrollToTop />
       <header className="premium-header">
         <div className="header-content">
           <Link to="/" className="brand-logo">
