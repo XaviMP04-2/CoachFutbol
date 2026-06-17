@@ -1,4 +1,3 @@
-//import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -57,11 +56,11 @@ const Layout = () => {
               <>
                 <span style={{ color: 'white', fontWeight: 500 }}>Hola, {user?.username}</span>
                 <button onClick={logout} className="nav-button">Salir</button>
-                <button className="profile-btn-premium">
+                <Link to="/perfil" className="profile-btn-premium">
                   <div className="avatar-placeholder">
                     {user?.username?.charAt(0).toUpperCase()}
                   </div>
-                </button>
+                </Link>
               </>
             ) : (
               <>

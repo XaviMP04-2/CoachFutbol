@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import styled from 'styled-components';
 import API_URL from '../config';
+import { useToast } from '../context/ToastContext';
 
 const Title = styled.h1`
   color: white;
@@ -204,14 +205,14 @@ const AdminDashboard = () => {
       });
       
       if (res.ok) {
-        alert('✅ Ejercicio aprobado correctamente');
+        showToast('Ejercicio aprobado ✅');
         fetchPending();
       } else {
-        alert('❌ Error al aprobar el ejercicio');
+        showToast('Error al aprobar el ejercicio', 'error');
       }
     } catch (err) {
       console.error(err);
-      alert('❌ Error de conexión');
+      showToast('Error de conexión', 'error');
     }
   };
 
@@ -230,14 +231,14 @@ const AdminDashboard = () => {
       });
       
       if (res.ok) {
-        alert('Ejercicio rechazado');
+        showToast('Ejercicio rechazado', 'info');
         fetchPending();
       } else {
-        alert('❌ Error al rechazar');
+        showToast('Error al rechazar', 'error');
       }
     } catch (err) {
       console.error(err);
-      alert('❌ Error de conexión');
+      showToast('Error de conexión', 'error');
     }
   };
 

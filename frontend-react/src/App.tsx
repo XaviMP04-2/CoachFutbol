@@ -14,44 +14,48 @@ import TacticalBoard from './pages/TacticalBoard';
 import Sessions from './pages/Sessions';
 import SessionDetail from './pages/SessionDetail';
 import PublicSession from './pages/PublicSession';
+import Profile from './pages/Profile';
 import { AuthProvider } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<IntroPage />} />
-          <Route element={<Layout />}>
-            {/* Rutas publicas */}
-            <Route path="/ejercicios" element={<ExerciseList />} />
-            <Route path="/ejercicio/:id" element={<ExerciseDetail />} />
-            <Route path="/autor/:username" element={<AuthorProfile />} />
-            <Route path="/pizarra" element={<TacticalBoard />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+      <ToastProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<IntroPage />} />
+            <Route element={<Layout />}>
+              {/* Rutas publicas */}
+              <Route path="/ejercicios" element={<ExerciseList />} />
+              <Route path="/ejercicio/:id" element={<ExerciseDetail />} />
+              <Route path="/autor/:username" element={<AuthorProfile />} />
+              <Route path="/pizarra" element={<TacticalBoard />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-            {/* Rutas privadas */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/crear" element={<CreateExercise />} />
-              <Route path="/my-space" element={<MySpace />} />
-              <Route path="/sesiones" element={<Sessions />} />
-              <Route path="/sesiones/:id" element={<SessionDetail />} />
+              {/* Rutas privadas */}
+              <Route element={<ProtectedRoute />}>
+                <Route path="/crear" element={<CreateExercise />} />
+                <Route path="/my-space" element={<MySpace />} />
+                <Route path="/sesiones" element={<Sessions />} />
+                <Route path="/sesiones/:id" element={<SessionDetail />} />
+                <Route path="/perfil" element={<Profile />} />
+              </Route>
+
+              {/* Solo admin */}
+              <Route element={<ProtectedRoute adminOnly />}>
+                <Route path="/admin" element={<AdminDashboard />} />
+              </Route>
             </Route>
 
-            {/* Solo admin */}
-            <Route element={<ProtectedRoute adminOnly />}>
-              <Route path="/admin" element={<AdminDashboard />} />
-            </Route>
-          </Route>
-
-          {/* Sesión pública (sin auth) */}
-          <Route path="/sesion-publica/:token" element={<PublicSession />} />
-        </Routes>
-      </Router>
+            {/* Sesion publica (sin auth) */}
+            <Route path="/sesion-publica/:token" element={<PublicSession />} />
+          </Routes>
+        </Router>
+      </ToastProvider>
     </AuthProvider>
   );
 }
 
 export default App;
-

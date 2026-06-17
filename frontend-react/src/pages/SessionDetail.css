@@ -87,13 +87,14 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 .session-exercise-item {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  height: 100%;
 }
 
 .session-exercise-duration {
@@ -110,8 +111,9 @@
 }
 
 .session-exercise-remove {
+  margin-top: auto;
   width: 100%;
-  padding: 0.4rem;
+  padding: 0.55rem;
   background: rgba(231,76,60,0.1);
   border: 1px solid rgba(231,76,60,0.25);
   border-radius: 8px;

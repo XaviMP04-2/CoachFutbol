@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import type { Exercise, TrainingSession } from '../types';
 import { useAuth } from '../context/AuthContext';
 import API_URL from '../config';
+import { useToast } from '../context/ToastContext';
 import { jsPDF } from 'jspdf';
 import CommentSection from '../components/CommentSection';
 import '../components/CommentSection.css';
@@ -11,6 +12,7 @@ const ExerciseDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isAuthenticated, isFavorite, toggleFavorite, token } = useAuth();
+  const { showToast } = useToast();
   const [exercise, setExercise] = useState<Exercise | null>(null);
   const [loading, setLoading] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
@@ -120,7 +122,7 @@ const ExerciseDetail: React.FC = () => {
       }
       addFooter();
       doc.save(`${exercise.titulo.replace(/[^a-zA-Z0-9]/g,'_')}.pdf`);
-    } catch (err) { console.error(err); alert('Error al generar el PDF'); }
+    } catch (err) { console.error(err); showToast('Error al generar el PDF', 'error'); }
     finally { setIsExporting(false); }
   };
 

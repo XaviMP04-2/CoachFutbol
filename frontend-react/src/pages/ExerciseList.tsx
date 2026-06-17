@@ -4,6 +4,7 @@ import type { Exercise } from '../types';
 import ExerciseCard from '../components/ExerciseCard';
 import GrumpySearch from '../components/GrumpySearch';
 import './ExerciseList.css';
+import SkeletonCard from '../components/SkeletonCard';
 import { useAuth } from '../context/AuthContext';
 import API_URL from '../config';
 
@@ -28,6 +29,7 @@ const ExerciseList: React.FC = () => {
   const [playersFilter, setPlayersFilter] = useState('');
   const [objectiveFilter, setObjectiveFilter] = useState('');
   const [tagFilter, setTagFilter] = useState('');
+  const [showFilterDrawer, setShowFilterDrawer] = useState(false);
   const [availableObjectives, setAvailableObjectives] = useState<{name: string}[]>([]);
 
   useEffect(() => {
@@ -95,9 +97,87 @@ const ExerciseList: React.FC = () => {
 
   const allTags = Array.from(new Set(exercises.flatMap(e => e.tags ?? []))).sort();
 
+  const activeFilterCount = [typeFilter, difficultyFilter, ageFilter, playersFilter, objectiveFilter, tagFilter].filter(Boolean).length;
+
   if (loading) return (
-    <div className="page-exercise-list" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <div style={{ fontSize: '1.5rem', color: '#bdc3c7' }}>Cargando ejercicios...</div>
+    <div className="page-exercise-list">
+      {/* Mobile filter toggle */}
+      <button className="mobile-filter-toggle" onClick={() => setShowFilterDrawer(true)}>
+        🎛 Filtros
+        {activeFilterCount > 0 && <span className="filter-count-badge">{activeFilterCount}</span>}
+      </button>
+
+      {/* Mobile filter drawer */}
+      {showFilterDrawer && (
+        <>
+          <div className="filter-drawer-overlay" onClick={() => setShowFilterDrawer(false)} />
+          <div className="filter-drawer">
+            <div className="filter-drawer-handle" />
+            <div className="filter-drawer-header">
+              <span className="filter-drawer-title">Filtros</span>
+              <button className="filter-drawer-close" onClick={() => setShowFilterDrawer(false)}>✕</button>
+            </div>
+            {/* Reuse sidebar content */}
+            <div className="filter-item">
+              <label>Tipo de Ejercicio</label>
+              <select className="filter-select" value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
+                <option value="">Todos los tipos</option>
+                <option value="técnico">Técnico</option>
+                <option value="táctico">Táctico</option>
+                <option value="físico">Físico</option>
+              </select>
+            </div>
+            <div className="filter-item">
+              <label>Dificultad</label>
+              <select className="filter-select" value={difficultyFilter} onChange={e => setDifficultyFilter(e.target.value)}>
+                <option value="">Todas las dificultades</option>
+                <option value="Fácil">Fácil</option>
+                <option value="Media">Media</option>
+                <option value="Difícil">Difícil</option>
+              </select>
+            </div>
+            <div className="filter-item">
+              <label>Objetivo</label>
+              <select className="filter-select" value={objectiveFilter} onChange={e => setObjectiveFilter(e.target.value)}>
+                <option value="">Todos los objetivos</option>
+                {availableObjectives.map(obj => (
+                  <option key={obj.name} value={obj.name}>{obj.name}</option>
+                ))}
+              </select>
+            </div>
+            {allTags.length > 0 && (
+              <div className="filter-item">
+                <label>Etiquetas</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginTop: '0.25rem' }}>
+                  {allTags.map(tag => (
+                    <button key={tag} onClick={() => setTagFilter(tagFilter === tag ? '' : tag)}
+                      style={{ background: tagFilter === tag ? 'rgba(243,156,18,0.25)' : 'rgba(243,156,18,0.08)', border: `1px solid ${tagFilter === tag ? '#f39c12' : 'rgba(243,156,18,0.3)'}`, borderRadius: '20px', padding: '0.2rem 0.55rem', fontSize: '0.78rem', color: '#f39c12', cursor: 'pointer', fontWeight: tagFilter === tag ? 700 : 400 }}>
+                      #{tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div style={{ marginTop: '1.25rem', display: 'flex', gap: '0.75rem' }}>
+              <button className="btn-clear" onClick={() => { clearFilters(); setShowFilterDrawer(false); }} style={{ flex: 1, padding: '0.65rem', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)', color: '#ecf0f1', cursor: 'pointer' }}>
+                Limpiar filtros
+              </button>
+              <button onClick={() => setShowFilterDrawer(false)} style={{ flex: 1, padding: '0.65rem', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg,#2ecc71,#27ae60)', color: 'white', fontWeight: 600, cursor: 'pointer' }}>
+                Ver resultados
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+
+      <div className="layout-container">
+        <aside className="filters-sidebar" />
+        <main className="exercises-content">
+          <section className="exercises-grid">
+            {Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)}
+          </section>
+        </main>
+      </div>
     </div>
   );
 
@@ -126,6 +206,75 @@ const ExerciseList: React.FC = () => {
             </Link>
           </div>
         </section>
+      )}
+
+      {/* Mobile filter toggle */}
+      <button className="mobile-filter-toggle" onClick={() => setShowFilterDrawer(true)}>
+        🎛 Filtros
+        {activeFilterCount > 0 && <span className="filter-count-badge">{activeFilterCount}</span>}
+      </button>
+
+      {/* Mobile filter drawer */}
+      {showFilterDrawer && (
+        <>
+          <div className="filter-drawer-overlay" onClick={() => setShowFilterDrawer(false)} />
+          <div className="filter-drawer">
+            <div className="filter-drawer-handle" />
+            <div className="filter-drawer-header">
+              <span className="filter-drawer-title">Filtros</span>
+              <button className="filter-drawer-close" onClick={() => setShowFilterDrawer(false)}>✕</button>
+            </div>
+            {/* Reuse sidebar content */}
+            <div className="filter-item">
+              <label>Tipo de Ejercicio</label>
+              <select className="filter-select" value={typeFilter} onChange={e => setTypeFilter(e.target.value)}>
+                <option value="">Todos los tipos</option>
+                <option value="técnico">Técnico</option>
+                <option value="táctico">Táctico</option>
+                <option value="físico">Físico</option>
+              </select>
+            </div>
+            <div className="filter-item">
+              <label>Dificultad</label>
+              <select className="filter-select" value={difficultyFilter} onChange={e => setDifficultyFilter(e.target.value)}>
+                <option value="">Todas las dificultades</option>
+                <option value="Fácil">Fácil</option>
+                <option value="Media">Media</option>
+                <option value="Difícil">Difícil</option>
+              </select>
+            </div>
+            <div className="filter-item">
+              <label>Objetivo</label>
+              <select className="filter-select" value={objectiveFilter} onChange={e => setObjectiveFilter(e.target.value)}>
+                <option value="">Todos los objetivos</option>
+                {availableObjectives.map(obj => (
+                  <option key={obj.name} value={obj.name}>{obj.name}</option>
+                ))}
+              </select>
+            </div>
+            {allTags.length > 0 && (
+              <div className="filter-item">
+                <label>Etiquetas</label>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginTop: '0.25rem' }}>
+                  {allTags.map(tag => (
+                    <button key={tag} onClick={() => setTagFilter(tagFilter === tag ? '' : tag)}
+                      style={{ background: tagFilter === tag ? 'rgba(243,156,18,0.25)' : 'rgba(243,156,18,0.08)', border: `1px solid ${tagFilter === tag ? '#f39c12' : 'rgba(243,156,18,0.3)'}`, borderRadius: '20px', padding: '0.2rem 0.55rem', fontSize: '0.78rem', color: '#f39c12', cursor: 'pointer', fontWeight: tagFilter === tag ? 700 : 400 }}>
+                      #{tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div style={{ marginTop: '1.25rem', display: 'flex', gap: '0.75rem' }}>
+              <button className="btn-clear" onClick={() => { clearFilters(); setShowFilterDrawer(false); }} style={{ flex: 1, padding: '0.65rem', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)', color: '#ecf0f1', cursor: 'pointer' }}>
+                Limpiar filtros
+              </button>
+              <button onClick={() => setShowFilterDrawer(false)} style={{ flex: 1, padding: '0.65rem', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg,#2ecc71,#27ae60)', color: 'white', fontWeight: 600, cursor: 'pointer' }}>
+                Ver resultados
+              </button>
+            </div>
+          </div>
+        </>
       )}
 
       <div className="layout-container">
@@ -263,6 +412,3 @@ const ExerciseList: React.FC = () => {
 };
 
 export default ExerciseList;
-
-
-

@@ -5,10 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import type { CanvasElement } from '../types';
 import API_URL from '../config';
+import { useToast } from '../context/ToastContext';
 
 const CreateExercise: React.FC = () => {
   const navigate = useNavigate();
   const { token, isAuthenticated, user } = useAuth();
+  const { showToast } = useToast();
   const [showCanvas, setShowCanvas] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [cloudinaryUrl, setCloudinaryUrl] = useState<string>(''); // URL from Cloudinary
@@ -81,7 +83,7 @@ const CreateExercise: React.FC = () => {
       console.error('Error uploading to Cloudinary:', err);
       // Fallback to Base64 if Cloudinary fails
       setFormData(prev => ({ ...prev, archivoUrl: dataUrl }));
-      alert('⚠️ No se pudo subir a CDN, usando imagen local (puede ser más lento)');
+      showToast('No se pudo subir a CDN, usando imagen local', 'warning');
     }
   };
 
@@ -90,7 +92,7 @@ const CreateExercise: React.FC = () => {
     
     // Wait for upload if still in progress
     if (isUploading) {
-      alert('Espera, la imagen se está subiendo...');
+      showToast('Espera, la imagen se está subiendo...', 'info');
       return;
     }
     
@@ -115,15 +117,15 @@ const CreateExercise: React.FC = () => {
       });
 
       if (res.ok) {
-        alert(isPublic ? 'Ejercicio enviado para aprobación.' : 'Ejercicio guardado en Mi Espacio.');
+        showToast(isPublic ? 'Ejercicio enviado para aprobación ✨' : 'Ejercicio guardado en Mi Espacio 🚀');
         navigate(isPublic ? '/ejercicios' : '/my-space');
       } else {
         const err = await res.json();
-        alert(`Error: ${err.error || 'No se pudo guardar'}`);
+        showToast(err.error || 'No se pudo guardar', 'error');
       }
     } catch (error) {
       console.error(error);
-      alert('Error de red o servidor');
+      showToast('Error de red o servidor', 'error');
     }
   };
 
@@ -264,6 +266,3 @@ const CreateExercise: React.FC = () => {
 };
 
 export default CreateExercise;
-
-
-

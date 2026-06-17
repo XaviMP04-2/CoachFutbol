@@ -1,0 +1,201 @@
+.profile-page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Hero */
+.profile-hero {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+}
+
+.profile-avatar-large {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(46,204,113,0.25);
+}
+
+.profile-name {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #ecf0f1;
+  margin: 0 0 0.2rem;
+}
+
+.profile-email {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.45);
+  margin: 0 0 0.4rem;
+}
+
+.profile-admin-badge {
+  background: rgba(243,156,18,0.2);
+  border: 1px solid rgba(243,156,18,0.4);
+  color: #f39c12;
+  font-size: 0.78rem;
+  padding: 0.15rem 0.6rem;
+  border-radius: 20px;
+}
+
+/* Sections */
+.profile-section {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.profile-section-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 1.25rem;
+}
+
+/* Stats */
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.profile-stat-card {
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.profile-stat-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #2ecc71;
+  line-height: 1.1;
+}
+
+.profile-stat-label {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.45);
+  margin-top: 0.3rem;
+}
+
+/* Settings */
+.profile-settings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.profile-setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.profile-setting-row:last-child { border-bottom: none; }
+
+.profile-setting-label {
+  font-size: 0.95rem;
+  color: #ecf0f1;
+  font-weight: 500;
+}
+.profile-setting-desc {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.35);
+  margin-top: 0.15rem;
+}
+
+/* Toggle switch */
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: rgba(255,255,255,0.12);
+  border-radius: 24px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px; height: 18px;
+  left: 3px; top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+.toggle-switch input:checked + .toggle-slider { background: #2ecc71; }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+.profile-select {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: #ecf0f1;
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.profile-save-btn {
+  margin-top: 1.25rem;
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  border: none;
+  border-radius: 10px;
+  padding: 0.65rem 1.5rem;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+}
+.profile-save-btn:hover { opacity: 0.85; }
+
+/* Danger zone */
+.profile-danger { border-color: rgba(231,76,60,0.2); }
+
+.profile-logout-btn {
+  background: rgba(231,76,60,0.12);
+  border: 1px solid rgba(231,76,60,0.35);
+  color: #e74c3c;
+  padding: 0.65rem 1.5rem;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.profile-logout-btn:hover { background: rgba(231,76,60,0.22); }
+
+@media (max-width: 500px) {
+  .profile-stats-grid { grid-template-columns: 1fr; }
+  .profile-hero { flex-direction: column; text-align: center; }
+}

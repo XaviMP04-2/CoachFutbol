@@ -3,10 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import type { TrainingSession } from '../types';
 import API_URL from '../config';
+import { useToast } from '../context/ToastContext';
 import './Sessions.css';
 
 const Sessions: React.FC = () => {
   const { token } = useAuth();
+  const { showToast } = useToast();
   const navigate = useNavigate();
   const [sessions, setSessions] = useState<TrainingSession[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,12 +39,20 @@ const Sessions: React.FC = () => {
     }
   };
 
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+
   const deleteSession = async (id: string, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    if (!confirm('\u00BFEliminar esta sesi\u00F3n?')) return;
+    if (confirmDelete !== id) {
+      setConfirmDelete(id);
+      setTimeout(() => setConfirmDelete(null), 3000);
+      return;
+    }
+    setConfirmDelete(null);
     await fetch(`${API_URL}/api/sessions/${id}`, { method: 'DELETE', headers: { 'x-auth-token': token || '' } });
     setSessions(prev => prev.filter(s => s._id !== id));
+    showToast('Sesión eliminada', 'info');
   };
 
   const totalMinutes = (s: TrainingSession) =>
@@ -62,7 +72,7 @@ const Sessions: React.FC = () => {
           <p className="sessions-subtitle">Organiza tus ejercicios en sesiones estructuradas</p>
         </div>
         <button className="sessions-create-btn" onClick={() => setShowCreate(!showCreate)}>
-          + Nueva Sesi\u00F3n
+          + Nueva Sesión
         </button>
       </div>
 
@@ -71,7 +81,7 @@ const Sessions: React.FC = () => {
           <form onSubmit={createSession} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <input
               type="text"
-              placeholder="Nombre de la sesi\u00F3n *"
+              placeholder="Nombre de la sesión *"
               value={newName}
               onChange={e => setNewName(e.target.value)}
               className="sessions-input"
@@ -80,7 +90,7 @@ const Sessions: React.FC = () => {
             />
             <input
               type="text"
-              placeholder="Descripci\u00F3n (opcional)"
+              placeholder="Descripción (opcional)"
               value={newDesc}
               onChange={e => setNewDesc(e.target.value)}
               className="sessions-input"
@@ -117,7 +127,7 @@ const Sessions: React.FC = () => {
                 <div className="session-card-body">
                   <div className="session-card-header">
                     <h3 className="session-card-title">{s.name}</h3>
-                    <button className="session-card-delete" onClick={e => deleteSession(s._id, e)} title="Eliminar">🗑</button>
+                    <button className="session-card-delete" onClick={e => deleteSession(s._id, e)} title={confirmDelete === s._id ? "Confirmar eliminación" : "Eliminar"} style={{ background: confirmDelete === s._id ? "rgba(231,76,60,0.3)" : undefined, color: confirmDelete === s._id ? "#e74c3c" : undefined }}>{confirmDelete === s._id ? "¿Confirmar?" : "🗑"}</button>
                   </div>
                   {s.description && <p className="session-card-desc">{s.description}</p>}
                   <div className="session-card-meta">
