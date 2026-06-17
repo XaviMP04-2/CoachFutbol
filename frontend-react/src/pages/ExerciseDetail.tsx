@@ -195,15 +195,29 @@ const ExerciseDetail: React.FC = () => {
           </div>
         )}
 
-        <div style={{ background:'#2c3e50', padding:'2rem', borderRadius:'10px', color:'#bdc3c7' }}>
-          <p style={{ marginBottom:'0.5rem' }}><strong style={{ color:'#ecf0f1' }}>Tipo:</strong> {exercise.tipo}</p>
-          <p style={{ marginBottom:'0.5rem' }}><strong style={{ color:'#ecf0f1' }}>Descripcion:</strong> {exercise.descripcion}</p>
-          <p style={{ marginBottom:'0.5rem' }}><strong style={{ color:'#ecf0f1' }}>Objetivos:</strong> {exercise.objetivos?.join(', ')}</p>
-          <p style={{ marginBottom:'0.5rem' }}><strong style={{ color:'#ecf0f1' }}>Edad recomendada:</strong> {exercise.edadRecomendada}</p>
-          <p style={{ marginBottom:'0.5rem' }}><strong style={{ color:'#ecf0f1' }}>Dificultad:</strong> {exercise.dificultad}</p>
-          <p style={{ marginBottom:'0.5rem' }}><strong style={{ color:'#ecf0f1' }}>Duracion:</strong> {exercise.duracion}</p>
-          <p style={{ marginBottom:'0.5rem' }}><strong style={{ color:'#ecf0f1' }}>Material:</strong> {exercise.material?.join(', ')}</p>
-          <p style={{ marginBottom:'0.5rem' }}><strong style={{ color:'#ecf0f1' }}>Numero de jugadores:</strong> {exercise.numeroJugadores}</p>
+        {/* Descripción */}
+        <p style={{ color:'rgba(255,255,255,0.75)', lineHeight:1.7, marginBottom:'1.5rem', fontSize:'1rem' }}>
+          {exercise.descripcion}
+        </p>
+
+        {/* Metadata grid */}
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(180px, 1fr))', gap:'0.75rem', marginBottom:'1.5rem' }}>
+          {[
+            { icon:'🏷️', label:'Tipo', value: exercise.tipo },
+            { icon:'⚡', label:'Dificultad', value: exercise.dificultad },
+            { icon:'🎯', label:'Objetivos', value: exercise.objetivos?.join(', ') || '-' },
+            { icon:'🧒', label:'Edad', value: exercise.edadRecomendada || '-' },
+            { icon:'⏱️', label:'Duración', value: exercise.duracion || '-' },
+            { icon:'👥', label:'Jugadores', value: String(exercise.numeroJugadores) },
+            { icon:'🧰', label:'Material', value: exercise.material?.join(', ') || '-' },
+          ].map(({ icon, label, value }) => (
+            <div key={label} style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:'12px', padding:'0.9rem 1rem' }}>
+              <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.05em', marginBottom:'0.35rem' }}>
+                    {icon} {label}
+              </div>
+              <div style={{ color:'#ecf0f1', fontWeight:600, fontSize:'0.95rem' }}>{value}</div>
+            </div>
+          ))}
         </div>
 
         {/* Comments */}
