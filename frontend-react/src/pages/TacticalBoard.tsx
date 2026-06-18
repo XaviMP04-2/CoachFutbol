@@ -1,114 +1,36 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import CanvasEditor from '../components/CanvasEditor';
 import type { CanvasElement } from '../types';
-import styled from 'styled-components';
-
-const Container = styled.div`
-  min-height: calc(100vh - 70px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
-  background: var(--bg-dark);
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  max-width: 1400px;
-  margin-bottom: 1rem;
-  padding: 0 1rem;
-`;
-
-const Title = styled.h1`
-  color: var(--text-primary);
-  font-size: 1.5rem;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-
-  [data-theme="light"] & span.title-text {
-    background: linear-gradient(135deg, #1e293b, #5227FF);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-`;
-
-const Actions = styled.div`
-  display: flex;
-  gap: 0.75rem;
-`;
-
-const ActionButton = styled.button<{ $primary?: boolean }>`
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: var(--radius-md);
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  transition: all 0.2s;
-  
-  background: ${props => props.$primary
-    ? 'linear-gradient(45deg, #2ecc71, #27ae60)'
-    : 'rgba(var(--surface), 0.08)'};
-  color: ${props => props.$primary ? 'white' : 'var(--text-primary)'};
-  
-  &:hover {
-    transform: translateY(-2px);
-  }
-`;
-
-const CanvasWrapper = styled.div`
-  width: 100%;
-  max-width: 1400px;
-  aspect-ratio: 16/10;
-  background: #1a1a2e;
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: border-color 0.2s;
-  
-  &:hover {
-    border-color: var(--accent-primary);
-  }
-`;
-
-const Placeholder = styled.div`
-  text-align: center;
-  color: var(--text-secondary);
-  
-  .icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-  }
-  
-  p {
-    margin: 0;
-    font-size: 1.1rem;
-  }
-`;
-
-const PreviewImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-`;
+import { drawFieldCanvas } from '../components/canvas/drawField';
+import './TacticalBoard.css';
 
 const TacticalBoard = () => {
   const [showCanvas, setShowCanvas] = useState(false);
   const [boardImage, setBoardImage] = useState<string | null>(null);
   const [elements, setElements] = useState<CanvasElement[]>([]);
-  const downloadRef = useRef<HTMLAnchorElement>(null);
+  const fieldCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Draw field preview in placeholder
+  useEffect(() => {
+    if (boardImage) return;
+    let raf: number;
+    const draw = () => {
+      const canvas = fieldCanvasRef.current;
+      if (!canvas) return;
+      const parent = canvas.parentElement;
+      const w = (parent?.clientWidth ?? canvas.clientWidth) || 800;
+      const h = Math.round(w * (765 / 1219));
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drawFieldCanvas(ctx, w, h, 'grass', 'full');
+    };
+    raf = requestAnimationFrame(draw);
+    return () => cancelAnimationFrame(raf);
+  }, [boardImage]);
 
   const handleSaveCanvas = (dataUrl: string) => {
     setBoardImage(dataUrl);
@@ -117,7 +39,6 @@ const TacticalBoard = () => {
 
   const handleDownload = () => {
     if (!boardImage) return;
-    
     const link = document.createElement('a');
     link.download = `pizarra-tactica-${Date.now()}.png`;
     link.href = boardImage;
@@ -130,36 +51,90 @@ const TacticalBoard = () => {
   };
 
   return (
-    <Container>
-      <Header>
-        <Title>
-          🎯 <span className="title-text">Pizarra Táctica</span>
-        </Title>
-        
-        <Actions>
-          {boardImage && (
-            <>
-              <ActionButton onClick={handleClear}>
-                🗑️ Limpiar
-              </ActionButton>
-              <ActionButton $primary onClick={handleDownload}>
-                📥 Descargar PNG
-              </ActionButton>
-            </>
-          )}
-        </Actions>
-      </Header>
+    <div className="tb-page">
 
-      <CanvasWrapper onClick={() => setShowCanvas(true)}>
-        {boardImage ? (
-          <PreviewImage src={boardImage} alt="Pizarra táctica" />
-        ) : (
-          <Placeholder>
-            <div className="icon">⚽</div>
-            <p>Haz clic para abrir la pizarra</p>
-          </Placeholder>
+      {/* ── Hero ─────────────────────────────────────────────── */}
+      <div className="tb-hero">
+        <div className="tb-hero-left">
+          <p className="tb-hero-label">Herramienta táctica</p>
+          <h1 className="tb-hero-title">Pizarra Táctica</h1>
+          <p className="tb-hero-sub">Diseña jugadas, posiciones y estrategias sobre el campo</p>
+        </div>
+        {boardImage && (
+          <div className="tb-hero-actions">
+            <button className="tb-btn-secondary" onClick={handleClear}>
+              🗑️ Limpiar
+            </button>
+            <button className="tb-btn-primary" onClick={handleDownload}>
+              📥 Descargar PNG
+            </button>
+          </div>
         )}
-      </CanvasWrapper>
+      </div>
+
+      {/* ── Main canvas area ──────────────────────────────────── */}
+      <div className="tb-canvas-wrap" onClick={() => setShowCanvas(true)}>
+        {boardImage ? (
+          <img
+            src={boardImage}
+            alt="Pizarra táctica"
+            className="tb-board-img"
+          />
+        ) : (
+          <>
+            <canvas ref={fieldCanvasRef} className="tb-field-canvas" />
+            <div className="tb-overlay">
+              <div className="tb-cta-card">
+                <span className="tb-cta-icon">✏️</span>
+                <span className="tb-cta-text">Abrir Pizarra</span>
+                <span className="tb-cta-hint">Haz clic para empezar a dibujar</span>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Edit overlay when board has content */}
+        {boardImage && (
+          <div className="tb-overlay tb-overlay-saved">
+            <div className="tb-cta-card">
+              <span className="tb-cta-icon">✏️</span>
+              <span className="tb-cta-text">Editar pizarra</span>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── Tips row ──────────────────────────────────────────── */}
+      <div className="tb-tips">
+        <div className="tb-tip">
+          <span className="tb-tip-icon">🖊️</span>
+          <div>
+            <strong>Dibuja libremente</strong>
+            <p>Usa el lápiz para trazar movimientos y jugadas</p>
+          </div>
+        </div>
+        <div className="tb-tip">
+          <span className="tb-tip-icon">👕</span>
+          <div>
+            <strong>Coloca jugadores</strong>
+            <p>Añade fichas de equipo local y visitante</p>
+          </div>
+        </div>
+        <div className="tb-tip">
+          <span className="tb-tip-icon">⚽</span>
+          <div>
+            <strong>Elementos extras</strong>
+            <p>Inserta balones, conos y flechas direccionales</p>
+          </div>
+        </div>
+        <div className="tb-tip">
+          <span className="tb-tip-icon">📥</span>
+          <div>
+            <strong>Exporta en PNG</strong>
+            <p>Descarga tu pizarra como imagen de alta calidad</p>
+          </div>
+        </div>
+      </div>
 
       {showCanvas && (
         <CanvasEditor
@@ -169,9 +144,7 @@ const TacticalBoard = () => {
           onUpdateElements={setElements}
         />
       )}
-      
-      <a ref={downloadRef} style={{ display: 'none' }} />
-    </Container>
+    </div>
   );
 };
 
