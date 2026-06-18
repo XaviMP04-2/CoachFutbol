@@ -182,3 +182,38 @@
   background: var(--accent-primary, #5227ff);
   color: white;
   bor
+/* ── Light mode text fixes ──────────────────────────────── */
+[data-theme="light"] .myspace-title,
+[data-theme="light"] .myspace-card-title,
+[data-theme="light"] .myspace-folder-name {
+  -webkit-text-fill-color: initial;
+  color: #1e293b !important;
+  background: none !important;
+}
+[data-theme="light"] .myspace-subtitle,
+[data-theme="light"] .myspace-card-type,
+[data-theme="light"] .myspace-card-difficulty,
+[data-theme="light"] .myspace-card-meta {
+  color: #64748b !important;
+}
+[data-theme="light"] .myspace-card {
+  background: #ffffff;
+  border-color: #dde4ef;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 14px rgba(82,39,255,0.05);
+}
+[data-theme="light"] .myspace-card:hover {
+  border-color: rgba(82,39,255,0.3);
+  box-shadow: 0 8px 28px rgba(82,39,255,0.12);
+}
+[data-theme="light"] .myspace-folder-picker button,
+[data-theme="light"] .myspace-folder-picker select {
+  background: #f1f5fb;
+  border-color: #c8d3e8;
+  color: #1e293b;
+}
+[data-theme="light"] .myspace-empty-state {
+  color: #64748b !important;
+}
+[data-theme="light"] .myspace-empty-state h3 {
+  color: #1e293b !important;
+}

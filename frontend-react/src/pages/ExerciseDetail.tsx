@@ -7,6 +7,7 @@ import { useToast } from '../context/ToastContext';
 import { jsPDF } from 'jspdf';
 import CommentSection from '../components/CommentSection';
 import '../components/CommentSection.css';
+import './ExerciseDetail.css';
 
 const ExerciseDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -132,26 +133,26 @@ const ExerciseDetail: React.FC = () => {
   if (!exercise) return <div className="contenido">Ejercicio no encontrado</div>;
 
   return (
-    <main className="content-main" style={{ padding: '1.5rem' }}>
+    <main className="content-main exercise-detail-page" style={{ padding: '1.5rem' }}>
       <div className="contenido">
         {/* Top bar */}
         <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1.5rem', flexWrap:'wrap', gap:'0.75rem' }}>
-          <button onClick={() => navigate(-1)} style={{ background:'none', border:'none', color:'#2ecc71', cursor:'pointer', fontSize:'1rem', padding:0 }}>
-            &larr; Volver
+          <button onClick={() => navigate(-1)} className="detail-back-btn">
+            ← Volver
           </button>
           <div style={{ display:'flex', gap:'0.75rem', flexWrap:'wrap' }}>
             {isAuthenticated && (
               <>
-                <button onClick={() => toggleFavorite(exercise._id)} style={{ background: exerciseIsFavorite ? 'linear-gradient(45deg,#e74c3c,#c0392b)' : 'rgba(255,255,255,0.1)', border:'none', borderRadius:'8px', padding:'0.75rem 1.25rem', color:'white', cursor:'pointer', fontSize:'0.95rem' }}>
-                  {exerciseIsFavorite ? '❤️ Favorito' : '🤍 Añadir a favoritos'}
+                <button onClick={() => toggleFavorite(exercise._id)} className={`detail-action-btn ${exerciseIsFavorite ? 'detail-action-btn--fav' : ''}`}>
+                  {exerciseIsFavorite ? '❤️ Favorito' : '🤍 Favoritos'}
                 </button>
                 <div style={{ position:'relative' }}>
-                  <button onClick={() => setShowSessionPicker(!showSessionPicker)} style={{ background:'rgba(82,39,255,0.25)', border:'1px solid rgba(82,39,255,0.5)', borderRadius:'8px', padding:'0.75rem 1.25rem', color:'white', cursor:'pointer', fontSize:'0.95rem' }}>
-                    📋 Añadir a sesion
+                  <button onClick={() => setShowSessionPicker(!showSessionPicker)} className="detail-action-btn detail-action-btn--session">
+                    📋 Añadir a sesión
                   </button>
                   {showSessionPicker && (
-                    <div style={{ position:'absolute', top:'calc(100% + 6px)', right:0, background:'#1e1e2e', border:'1px solid rgba(255,255,255,0.15)', borderRadius:'12px', padding:'0.5rem', zIndex:100, minWidth:'200px', boxShadow:'0 8px 30px rgba(0,0,0,0.5)' }}>
-                      <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.4)', padding:'0.25rem 0.5rem 0.5rem', textTransform:'uppercase', letterSpacing:'0.05em' }}>Mis sesiones</div>
+                    <div className="session-picker-dropdown" style={{ position:'absolute', top:'calc(100% + 6px)', right:0, background:'#1e1e2e', border:'1px solid rgba(255,255,255,0.15)', borderRadius:'12px', padding:'0.5rem', zIndex:100, minWidth:'200px', boxShadow:'0 8px 30px rgba(0,0,0,0.5)' }}>
+                      <div className="session-picker-label" style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.4)', padding:'0.25rem 0.5rem 0.5rem', textTransform:'uppercase', letterSpacing:'0.05em' }}>Mis sesiones</div>
                       {sessions.length === 0 ? (
                         <div style={{ padding:'0.75rem 0.5rem', color:'rgba(255,255,255,0.45)', fontSize:'0.85rem' }}>Sin sesiones creadas</div>
                       ) : sessions.map(s => (
@@ -164,65 +165,90 @@ const ExerciseDetail: React.FC = () => {
                 </div>
               </>
             )}
-            <button onClick={handleExportPDF} disabled={isExporting} style={{ background:'linear-gradient(45deg,#3498db,#2980b9)', border:'none', borderRadius:'8px', padding:'0.75rem 1.25rem', color:'white', cursor: isExporting ? 'wait' : 'pointer', fontSize:'0.95rem', opacity: isExporting ? 0.7 : 1 }}>
+            <button onClick={handleExportPDF} disabled={isExporting} className="detail-action-btn detail-action-btn--pdf" style={{ opacity: isExporting ? 0.7 : 1, cursor: isExporting ? 'wait' : 'pointer' }}>
               {isExporting ? '⏳ Generando...' : '📄 Exportar PDF'}
             </button>
           </div>
         </div>
 
-        {/* Title + view count */}
-        <div style={{ display:'flex', alignItems:'center', gap:'1rem', marginBottom:'1.5rem', flexWrap:'wrap' }}>
-          <h1 style={{ color:'#ecf0f1', margin:0 }}>{exercise.titulo}</h1>
-          {(exercise.viewCount ?? 0) > 0 && (
-            <span style={{ fontSize:'0.85rem', color:'rgba(255,255,255,0.4)', display:'flex', alignItems:'center', gap:'0.3rem' }}>
-              👁 {exercise.viewCount} vistas
-            </span>
-          )}
-        </div>
-
-        {/* Tags */}
-        {exercise.tags && exercise.tags.length > 0 && (
-          <div style={{ display:'flex', flexWrap:'wrap', gap:'0.5rem', marginBottom:'1.5rem' }}>
-            {exercise.tags.map(tag => (
-              <span key={tag} style={{ background:'rgba(243,156,18,0.15)', border:'1px solid rgba(243,156,18,0.35)', borderRadius:'20px', padding:'0.25rem 0.75rem', fontSize:'0.82rem', color:'#f39c12' }}>
-                #{tag}
-              </span>
-            ))}
-          </div>
-        )}
-
-        {exercise.archivoUrl && (
-          <div style={{ marginBottom:'2rem', textAlign:'center', background:'#2c3e50', padding:'1rem', borderRadius:'10px' }}>
-            <img src={exercise.archivoUrl} alt="Imagen del ejercicio" style={{ maxWidth:'100%', maxHeight:'600px', borderRadius:'5px', boxShadow:'0 4px 15px rgba(0,0,0,0.3)' }} />
-          </div>
-        )}
-
-        {/* Descripción */}
-        <p style={{ color:'rgba(255,255,255,0.75)', lineHeight:1.7, marginBottom:'1.5rem', fontSize:'1rem' }}>
-          {exercise.descripcion}
-        </p>
-
-        {/* Metadata grid */}
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(180px, 1fr))', gap:'0.75rem', marginBottom:'1.5rem' }}>
-          {[
-            { icon:'🏷️', label:'Tipo', value: exercise.tipo },
-            { icon:'⚡', label:'Dificultad', value: exercise.dificultad },
-            { icon:'🎯', label:'Objetivos', value: exercise.objetivos?.join(', ') || '-' },
-            { icon:'🧒', label:'Edad', value: exercise.edadRecomendada || '-' },
-            { icon:'⏱️', label:'Duración', value: exercise.duracion || '-' },
-            { icon:'👥', label:'Jugadores', value: String(exercise.numeroJugadores) },
-            { icon:'🧰', label:'Material', value: exercise.material?.join(', ') || '-' },
-          ].map(({ icon, label, value }) => (
-            <div key={label} style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:'12px', padding:'0.9rem 1rem' }}>
-              <div style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.05em', marginBottom:'0.35rem' }}>
-                    {icon} {label}
+        {/* Two-column layout: canvas left, info right */}
+        <div className="exercise-detail-layout">
+          {/* Left: canvas / image */}
+          <div className="exercise-detail-canvas">
+            {exercise.archivoUrl ? (
+              <div className="detail-canvas-wrapper">
+                <img src={exercise.archivoUrl} alt="Imagen del ejercicio" style={{ width:'100%', height:'100%', objectFit:'contain', borderRadius:'10px' }} />
               </div>
-              <div style={{ color:'#ecf0f1', fontWeight:600, fontSize:'0.95rem' }}>{value}</div>
+            ) : (
+              <div className="detail-canvas-placeholder">
+                <span style={{ fontSize:'3rem' }}>⚽</span>
+                <span style={{ color:'rgba(255,255,255,0.3)', fontSize:'0.9rem', marginTop:'0.5rem' }}>Sin diagrama</span>
+              </div>
+            )}
+          </div>
+
+          {/* Right: info */}
+          <div className="exercise-detail-info">
+            {/* Title + view count */}
+            <div style={{ marginBottom:'1rem' }}>
+              <h1 style={{ color:'#ecf0f1', margin:'0 0 0.4rem' }} className="exercise-detail-title">{exercise.titulo}</h1>
+              {(exercise.viewCount ?? 0) > 0 && (
+                <span className="view-count-text" style={{ fontSize:'0.82rem', color:'rgba(255,255,255,0.4)', display:'flex', alignItems:'center', gap:'0.3rem' }}>
+                  👁 {exercise.viewCount} vistas
+                </span>
+              )}
             </div>
-          ))}
+
+            {/* Tags */}
+            {exercise.tags && exercise.tags.length > 0 && (
+              <div style={{ display:'flex', flexWrap:'wrap', gap:'0.5rem', marginBottom:'1rem' }}>
+                {exercise.tags.map(tag => (
+                  <span key={tag} style={{ background:'rgba(243,156,18,0.15)', border:'1px solid rgba(243,156,18,0.35)', borderRadius:'20px', padding:'0.2rem 0.65rem', fontSize:'0.78rem', color:'#f39c12' }}>
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Descripción */}
+            <p className="description-text" style={{ color:'rgba(255,255,255,0.75)', lineHeight:1.7, marginBottom:'1.25rem', fontSize:'0.95rem' }}>
+              {exercise.descripcion}
+            </p>
+
+            {/* Metadata grid */}
+            <div style={{ display:'grid', gridTemplateColumns:'repeat(2, 1fr)', gap:'0.6rem', marginBottom:'1rem' }}>
+              {[
+                { icon:'🏷️', label:'Tipo', value: exercise.tipo },
+                { icon:'⚡', label:'Dificultad', value: exercise.dificultad },
+                { icon:'🧒', label:'Edad', value: exercise.edadRecomendada || '-' },
+                { icon:'⏱️', label:'Duración', value: exercise.duracion || '-' },
+                { icon:'👥', label:'Jugadores', value: String(exercise.numeroJugadores) },
+                { icon:'🧰', label:'Material', value: exercise.material?.join(', ') || '-' },
+              ].map(({ icon, label, value }) => (
+                <div key={label} className="meta-card" style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.09)', borderRadius:'10px', padding:'0.75rem' }}>
+                  <div className="meta-card-label" style={{ fontSize:'0.7rem', color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.05em', marginBottom:'0.25rem' }}>
+                    {icon} {label}
+                  </div>
+                  <div className="meta-card-value" style={{ color:'#ecf0f1', fontWeight:600, fontSize:'0.88rem' }}>{value}</div>
+                </div>
+              ))}
+            </div>
+
+            {/* Objetivos — full width within info col */}
+            {exercise.objetivos && exercise.objetivos.length > 0 && (
+              <div style={{ marginBottom:'0.75rem' }}>
+                <div style={{ fontSize:'0.7rem', color:'rgba(255,255,255,0.4)', textTransform:'uppercase', letterSpacing:'0.05em', marginBottom:'0.5rem' }}>🎯 Objetivos</div>
+                <div style={{ display:'flex', flexWrap:'wrap', gap:'0.4rem' }}>
+                  {exercise.objetivos.map(obj => (
+                    <span key={obj} style={{ background:'rgba(46,204,113,0.12)', border:'1px solid rgba(46,204,113,0.25)', borderRadius:'6px', padding:'0.2rem 0.55rem', fontSize:'0.78rem', color:'#2ecc71' }}>{obj}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Comments */}
+        {/* Comments — full width below layout */}
         {id && <CommentSection exerciseId={id} />}
       </div>
     </main>

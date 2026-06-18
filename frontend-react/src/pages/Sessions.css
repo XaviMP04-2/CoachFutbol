@@ -11,6 +11,13 @@
   background: linear-gradient(to right, #fff, #a5a5a5);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .sessions-title {
+  background: linear-gradient(135deg, #1e293b, #5227FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   margin: 0 0 0.25rem;
 }
 
@@ -79,7 +86,7 @@
 /* Grid */
 .sessions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1.5rem;
 }
 
@@ -236,3 +243,19 @@
 [data-theme="light"] .sessions-subtitle {
   color: #64748b;
 }
+
+[data-theme="light"] .sessions-title { -webkit-text-fill-color: transparent; }
+[data-theme="light"] .sessions-subtitle { color: #64748b !important; }
+[data-theme="light"] .sessions-create-btn { color: white !important; }
+[data-theme="light"] .sessions-input {
+  background: #f1f5fb;
+  border-color: #c8d3e8;
+  color: #1e293b;
+}
+[data-theme="light"] .session-card-title { color: #1e293b !important; }
+[data-theme="light"] .session-card-desc  { color: #64748b !important; }
+[data-theme="light"] .session-card-footer { color: #94a3b8 !important; }
+[data-theme="light"] .sessions-empty h3  { color: #1e293b !important; }
+[data-theme="light"] .sessions-empty p   { color: #64748b !important; }
+[data-theme="light"] .session-card-badge { color: #475569 !important; background: rgba(0,0,0,0.06) !important; }
+[data-theme="light"] .session-card-badge.accent { color: white !important; }

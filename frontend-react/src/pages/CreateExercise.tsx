@@ -6,6 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import type { CanvasElement } from '../types';
 import API_URL from '../config';
 import { useToast } from '../context/ToastContext';
+import { launchConfetti } from '../utils/confetti';
 
 const CreateExercise: React.FC = () => {
   const navigate = useNavigate();
@@ -117,6 +118,7 @@ const CreateExercise: React.FC = () => {
       });
 
       if (res.ok) {
+        launchConfetti();
         showToast(isPublic ? 'Ejercicio enviado para aprobación ✨' : 'Ejercicio guardado en Mi Espacio 🚀');
         navigate(isPublic ? '/ejercicios' : '/my-space');
       } else {

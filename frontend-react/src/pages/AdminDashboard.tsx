@@ -172,6 +172,7 @@ const ExpandedDetails = styled.div`
 
 const AdminDashboard = () => {
   const { user, token } = useAuth();
+  const { showToast } = useToast();
   const [pendingExercises, setPendingExercises] = useState([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [error, setError] = useState('');

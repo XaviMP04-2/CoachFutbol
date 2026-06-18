@@ -126,3 +126,16 @@
 .session-exercise-remove:hover {
   background: rgba(231,76,60,0.25);
 }
+
+/* ── Light mode ──────────────────────────────────────────── */
+[data-theme="light"] .session-detail-title,
+[data-theme="light"] .session-detail-name { color: #1e293b !important; }
+[data-theme="light"] .session-detail-desc,
+[data-theme="light"] .session-detail-meta { color: #64748b !important; }
+[data-theme="light"] .session-exercise-item {
+  background: #ffffff;
+  border-color: #dde4ef;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+[data-theme="light"] .session-exercise-title { color: #1e293b !important; }
+[data-theme="light"] .session-exercise-meta  { color: #64748b !important; }

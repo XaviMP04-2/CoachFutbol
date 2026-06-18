@@ -60,10 +60,10 @@ const Profile: React.FC = () => {
       {/* Hero */}
       <div className="profile-hero">
         <div className="profile-avatar-large">
-          {user.username.charAt(0).toUpperCase()}
+          {(user.username || '').charAt(0).toUpperCase()}
         </div>
         <div>
-          <h1 className="profile-name">{user.username}</h1>
+          <h1 className="profile-name">{user.username || 'Usuario'}</h1>
           <p className="profile-email">{user.email ?? 'Sin email registrado'}</p>
           {user.isAdmin && <span className="profile-admin-badge">⚡ Admin</span>}
         </div>

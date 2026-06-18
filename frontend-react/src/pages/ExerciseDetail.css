@@ -1,0 +1,165 @@
+/* ExerciseDetail.css */
+.exercise-detail-page .contenido h1 {
+  color: var(--text-primary);
+}
+
+/* ── Two-column layout ─────────────────────────────── */
+.exercise-detail-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  align-items: start;
+}
+
+.exercise-detail-canvas {
+  position: sticky;
+  top: 1.5rem;
+}
+
+.detail-canvas-wrapper {
+  background: #1a2035;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 16/10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.detail-canvas-placeholder {
+  background: #1a2035;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  aspect-ratio: 16/10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.exercise-detail-info {
+  min-width: 0;
+}
+
+/* ── Action buttons ────────────────────────────────── */
+.detail-back-btn {
+  background: none;
+  border: none;
+  color: #2ecc71;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  opacity: 0.8;
+  transition: opacity 0.15s;
+}
+.detail-back-btn:hover { opacity: 1; }
+
+.detail-action-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+  color: white;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.detail-action-btn:hover { background: rgba(255,255,255,0.14); }
+
+.detail-action-btn--fav {
+  background: linear-gradient(45deg, rgba(231,76,60,0.25), rgba(192,57,43,0.25));
+  border-color: rgba(231,76,60,0.4);
+}
+.detail-action-btn--fav:hover {
+  background: linear-gradient(45deg, rgba(231,76,60,0.4), rgba(192,57,43,0.4));
+}
+
+.detail-action-btn--session {
+  background: rgba(82,39,255,0.2);
+  border-color: rgba(82,39,255,0.4);
+}
+.detail-action-btn--session:hover {
+  background: rgba(82,39,255,0.32);
+}
+
+.detail-action-btn--pdf {
+  background: linear-gradient(45deg, #3498db, #2980b9);
+  border-color: transparent;
+  font-weight: 600;
+}
+.detail-action-btn--pdf:hover {
+  background: linear-gradient(45deg, #4aa9e9, #3498db);
+}
+
+@media (max-width: 860px) {
+  .exercise-detail-layout {
+    grid-template-columns: 1fr;
+  }
+  .exercise-detail-canvas {
+    position: static;
+  }
+}
+
+/* ── Light mode fixes ─────────────────────────────── */
+
+.exercise-detail-page p,
+.exercise-detail-page .description-text {
+  color: rgba(var(--surface), 0.75);
+}
+
+/* ── Light mode fixes (inline style overrides) ─────────────── */
+[data-theme="light"] .exercise-detail-page h1 {
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .exercise-detail-page p {
+  color: #475569 !important;
+}
+
+/* Metadata grid cards */
+[data-theme="light"] .meta-card {
+  background: #ffffff !important;
+  border-color: #dde4ef !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+[data-theme="light"] .meta-card-label {
+  color: #94a3b8 !important;
+}
+
+[data-theme="light"] .meta-card-value {
+  color: #1e293b !important;
+}
+
+/* Session picker dropdown */
+[data-theme="light"] .session-picker-dropdown {
+  background: #ffffff !important;
+  border-color: #dde4ef !important;
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .session-picker-label {
+  color: #94a3b8 !important;
+}
+
+[data-theme="light"] .session-picker-btn {
+  color: #1e293b !important;
+}
+
+[data-theme="light"] .session-picker-btn:hover {
+  background: #f1f5fb !important;
+}
+
+/* View count */
+[data-theme="light"] .view-count-text {
+  color: #94a3b8 !important;
+}
