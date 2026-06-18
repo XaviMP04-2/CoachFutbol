@@ -771,10 +771,10 @@ body {
     box-shadow: 0 -3px 15px rgba(0,0,0,0.4);
   }
   
-  /* Canvas Area: Takes remaining space at top */
+  /* Canvas Area: Takes remaining space at top, leave room for 64px bottom bar */
   .canvas-editor-area {
     order: 1;
-    padding: 0.5rem;
+    padding: 0.5rem 0.5rem 72px;
     flex: 1;
   }
   

@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import API_URL from '../config';
 import { LOGICAL_WIDTH, LOGICAL_HEIGHT } from './canvas/constants';
 import { drawElement, drawSelectionOverlay } from './canvas/drawElement';
+import { drawFieldCanvas, type FieldType, type ViewMode } from './canvas/drawField';
 import { useCanvasHistory } from '../hooks/useCanvasHistory';
 import { useCanvasScale } from '../hooks/useCanvasScale';
 import CanvasToolbar from './canvas/CanvasToolbar';
@@ -58,6 +59,13 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
   const [selectedShapeOpacity, setSelectedShapeOpacity] = useState(0.3);
   const [selectedLineWidth, setSelectedLineWidth] = useState(4);
 
+  // Field settings
+  const [fieldType, setFieldType] = useState<FieldType>('grass');
+  const [viewMode, setViewMode] = useState<ViewMode>('full');
+
+  // Zoom (CSS transform scale — 1.0 = fit to container)
+  const [zoom, setZoom] = useState(1);
+
   // Templates
   const [showSaveTpl, setShowSaveTpl] = useState(false);
   const [showLoadTpl, setShowLoadTpl] = useState(false);
@@ -74,8 +82,8 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
   // Sync elements to parent
   useEffect(() => { onUpdateElements(elements); }, [elements, onUpdateElements]);
 
-  // Redraw whenever elements or selection changes
-  useEffect(() => { drawCanvas(); }, [elements, selectedElementId, isEditingText]);
+  // Redraw whenever elements, selection, or field settings change
+  useEffect(() => { drawCanvas(); }, [elements, selectedElementId, isEditingText, fieldType, viewMode]);
 
   // ── Drawing ──────────────────────────────────────────────────────────────
 
@@ -86,11 +94,9 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
     if (!ctx) return;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    const bg = new Image();
-    bg.src = '/img/campo.png';
-
     const drawContent = () => {
-      ctx.drawImage(bg, 0, 0, canvas.width, canvas.height);
+      // Draw the field using Canvas API — crisp at any resolution
+      drawFieldCanvas(ctx, canvas.width, canvas.height, fieldType, viewMode);
 
       // Shapes first (bottom layer)
       elements
@@ -178,8 +184,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
       }
     };
 
-    if (bg.complete) drawContent();
-    else bg.onload = drawContent;
+    drawContent();
   };
 
   // ── Helpers ──────────────────────────────────────────────────────────────
@@ -242,23 +247,24 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
   };
 
   const handleExportPNG = () => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
     const tempCanvas = document.createElement('canvas');
     tempCanvas.width = LOGICAL_WIDTH;
     tempCanvas.height = LOGICAL_HEIGHT;
     const tempCtx = tempCanvas.getContext('2d');
     if (!tempCtx) return;
-    const bg = new Image();
-    bg.src = '/img/campo.png';
-    bg.onload = () => {
-      tempCtx.drawImage(bg, 0, 0, tempCanvas.width, tempCanvas.height);
-      elements.forEach(el => drawElement(tempCtx, el));
-      const link = document.createElement('a');
-      link.download = `pizarra-${Date.now()}.png`;
-      link.href = tempCanvas.toDataURL('image/png');
-      link.click();
-    };
+    drawFieldCanvas(tempCtx, LOGICAL_WIDTH, LOGICAL_HEIGHT, fieldType, viewMode);
+    elements.forEach(el => drawElement(tempCtx, el));
+    const link = document.createElement('a');
+    link.download = `pizarra-${Date.now()}.png`;
+    link.href = tempCanvas.toDataURL('image/png');
+    link.click();
+  };
+
+  const handleClearAll = () => {
+    if (!window.confirm('¿Borrar todos los elementos del campo?')) return;
+    setElements([]);
+    saveToHistory([]);
+    setSelectedElementId(null);
   };
 
   // ── Mouse/Touch event handlers ────────────────────────────────────────────
@@ -470,6 +476,44 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
     }
   };
 
+  // ── Pinch-to-zoom (native touch events on canvas) ────────────────────────
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    let lastDist: number | null = null;
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 2) {
+        lastDist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY,
+        );
+      }
+    };
+    const onTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 2 && lastDist !== null) {
+        e.preventDefault();
+        const dist = Math.hypot(
+          e.touches[0].clientX - e.touches[1].clientX,
+          e.touches[0].clientY - e.touches[1].clientY,
+        );
+        const delta = dist / lastDist;
+        setZoom(prev => Math.min(3, Math.max(0.4, prev * delta)));
+        lastDist = dist;
+      }
+    };
+    const onTouchEnd = () => { lastDist = null; };
+
+    canvas.addEventListener('touchstart', onTouchStart, { passive: true });
+    canvas.addEventListener('touchmove', onTouchMove, { passive: false });
+    canvas.addEventListener('touchend', onTouchEnd);
+    return () => {
+      canvas.removeEventListener('touchstart', onTouchStart);
+      canvas.removeEventListener('touchmove', onTouchMove);
+      canvas.removeEventListener('touchend', onTouchEnd);
+    };
+  }, []);
+
   // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -532,7 +576,7 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
       className="canvas-editor-container"
       style={{ display: 'flex', flexDirection: 'row', position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', background: '#1a1a1a', zIndex: 2000, padding: 0 }}
     >
-      {/* Left toolbar */}
+      {/* Left / bottom toolbar */}
       <CanvasToolbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
@@ -544,6 +588,13 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
         canRedo={canRedo}
         hasPendingPlacement={!!pendingPlacement}
         clearPendingPlacement={() => setPendingPlacement(null)}
+        fieldType={fieldType}
+        onFieldType={setFieldType}
+        viewMode={viewMode}
+        onViewMode={setViewMode}
+        zoom={zoom}
+        onZoom={setZoom}
+        onClearAll={handleClearAll}
       />
 
       {/* Canvas area */}
@@ -556,30 +607,32 @@ const CanvasEditor: React.FC<CanvasEditorProps> = ({ onSave, onClose, initialEle
           <div className="canvas-pending-indicator">Toca en el campo para colocar</div>
         )}
 
-        <canvas
-          ref={canvasRef}
-          width={LOGICAL_WIDTH}
-          height={LOGICAL_HEIGHT}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
-          onTouchStart={e => { e.preventDefault(); handleMouseDown(e as unknown as React.MouseEvent); }}
-          onTouchMove={e => { e.preventDefault(); handleMouseMove(e as unknown as React.MouseEvent); }}
-          onTouchEnd={e => { e.preventDefault(); handleMouseUp(e as unknown as React.MouseEvent); }}
-          onDoubleClick={handleDoubleClick}
-          onDragOver={e => e.preventDefault()}
-          onDrop={handleDrop}
-          style={{
-            maxWidth: '100%',
-            maxHeight: '100%',
-            aspectRatio: `${LOGICAL_WIDTH}/${LOGICAL_HEIGHT}`,
-            boxShadow: pendingPlacement ? '0 0 20px #27ae60' : '0 0 30px rgba(0,0,0,0.5)',
-            cursor: pendingPlacement || activeTab === 'flecha' || activeTab === 'formas' ? 'crosshair' : 'default',
-            touchAction: 'none',
-            border: pendingPlacement ? '3px solid #27ae60' : 'none'
-          }}
-        />
+        <div style={{ transform: `scale(${zoom})`, transformOrigin: 'center center', transition: 'transform 0.15s ease', display: 'flex' }}>
+          <canvas
+            ref={canvasRef}
+            width={LOGICAL_WIDTH}
+            height={LOGICAL_HEIGHT}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            onTouchStart={e => { if (e.touches.length === 1) { e.preventDefault(); handleMouseDown(e as unknown as React.MouseEvent); } }}
+            onTouchMove={e => { if (e.touches.length === 1) { e.preventDefault(); handleMouseMove(e as unknown as React.MouseEvent); } }}
+            onTouchEnd={e => { e.preventDefault(); handleMouseUp(e as unknown as React.MouseEvent); }}
+            onDoubleClick={handleDoubleClick}
+            onDragOver={e => e.preventDefault()}
+            onDrop={handleDrop}
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+              aspectRatio: `${LOGICAL_WIDTH}/${LOGICAL_HEIGHT}`,
+              boxShadow: pendingPlacement ? '0 0 20px #27ae60' : '0 0 30px rgba(0,0,0,0.5)',
+              cursor: pendingPlacement || activeTab === 'flecha' || activeTab === 'formas' ? 'crosshair' : 'default',
+              touchAction: 'none',
+              border: pendingPlacement ? '3px solid #27ae60' : 'none'
+            }}
+          />
+        </div>
 
         {/* Tool popup panels */}
         <CanvasToolPanel
