@@ -181,7 +181,12 @@
 .myspace-folder-btn-badge {
   background: var(--accent-primary, #5227ff);
   color: white;
-  bor
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
 /* ── Light mode text fixes ──────────────────────────────── */
 [data-theme="light"] .myspace-title,
 [data-theme="light"] .myspace-card-title,
