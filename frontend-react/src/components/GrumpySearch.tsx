@@ -356,6 +356,37 @@ const StyledWrapper = styled.div`
     background: radial-gradient(at right bottom, white, transparent 70%);
   }
 
+  /* ── Light mode ─────────────────────────────────────────── */
+  [data-theme="light"] & .input {
+    background-color: #ffffff;
+  }
+  [data-theme="light"] & .input input::placeholder {
+    color: #94a3b8;
+  }
+  [data-theme="light"] & .icon {
+    --icon-color: #64748b;
+    color: #64748b;
+  }
+  [data-theme="light"] & .glow-layer-bg {
+    background: #e8eaf0;
+  }
+  [data-theme="light"] & .glow-layer-1 {
+    opacity: 0.45;
+  }
+  [data-theme="light"] & .glow-layer-2 {
+    opacity: 0.35;
+  }
+  [data-theme="light"] & .glow-layer-3 {
+    opacity: 0.25;
+  }
+  [data-theme="light"] & .glow {
+    opacity: 0.35;
+  }
+  [data-theme="light"] & .reflection::after {
+    display: none;
+  }
+
+
   /* States */
 
   .input input:focus:not(:placeholder-shown) ~ .icon .magnifier,
