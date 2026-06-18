@@ -128,7 +128,12 @@
 }
 
 /* ── Light mode ──────────────────────────────────────────── */
-[data-theme="light"] .session-detail-title,
+[data-theme="light"] .session-detail-title {
+  background: linear-gradient(135deg, #1e293b, #5227FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 [data-theme="light"] .session-detail-name { color: #1e293b !important; }
 [data-theme="light"] .session-detail-desc,
 [data-theme="light"] .session-detail-meta { color: #64748b !important; }

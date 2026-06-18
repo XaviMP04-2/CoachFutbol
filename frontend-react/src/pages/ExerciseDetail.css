@@ -117,8 +117,13 @@
 }
 
 /* ── Light mode fixes (inline style overrides) ─────────────── */
-[data-theme="light"] .exercise-detail-page h1 {
-  color: #1e293b !important;
+[data-theme="light"] .exercise-detail-page h1,
+[data-theme="light"] .exercise-detail-title {
+  background: linear-gradient(135deg, #1e293b, #5227FF) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  color: unset !important;
 }
 
 [data-theme="light"] .exercise-detail-page p {

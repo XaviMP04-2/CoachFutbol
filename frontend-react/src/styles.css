@@ -376,6 +376,115 @@ body {
   border-bottom: 1px solid var(--border-light);
 }
 
+/* ── Form layout helpers ───────────────────────────────── */
+
+/* Full-width field (spans both label + input columns) */
+.form-field-full {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* 3-column row for compact fields */
+.form-fields-row-3 {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+/* Individual field inside a row */
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* Tag pills */
+.form-tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.form-tag-pill {
+  background: rgba(243,156,18,0.12);
+  border: 1px solid rgba(243,156,18,0.3);
+  border-radius: 20px;
+  padding: 0.25rem 0.65rem;
+  font-size: 0.82rem;
+  color: #f39c12;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.form-tag-remove {
+  background: none;
+  border: none;
+  color: #f39c12;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  font-size: 0.85rem;
+  opacity: 0.7;
+  transition: opacity 0.15s;
+}
+.form-tag-remove:hover { opacity: 1; }
+
+/* Solicitar publicación row */
+.form-publish-row {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(82,39,255,0.06);
+  border: 1px solid rgba(82,39,255,0.18);
+  border-radius: 12px;
+}
+
+.form-publish-row input[type="checkbox"] {
+  width: 1.2rem !important;
+  height: 1.2rem !important;
+  flex-shrink: 0;
+  accent-color: #5227FF;
+  cursor: pointer;
+}
+
+.form-publish-label {
+  display: block;
+  margin-bottom: 0.15rem !important;
+  cursor: pointer;
+  text-transform: none !important;
+  letter-spacing: normal !important;
+  font-size: 0.92rem !important;
+  color: var(--text-primary) !important;
+}
+
+.form-publish-hint {
+  margin: 0;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+@media (max-width: 600px) {
+  .form-fields-row-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+[data-theme="light"] .form-publish-row {
+  background: rgba(82,39,255,0.04);
+  border-color: rgba(82,39,255,0.15);
+}
+
+[data-theme="light"] .form-publish-hint {
+  color: #94a3b8;
+}
+
 /* Preview Card */
 .preview-card {
   position: sticky;
@@ -802,7 +911,10 @@ body {
 }
 
 [data-theme="light"] .formulario select {
+  background-color: #f1f5fb;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='rgba(0,0,0,0.4)' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
 }
 
 [data-theme="light"] .formulario input:focus,
@@ -813,7 +925,10 @@ body {
 }
 
 [data-theme="light"] .form-group-title {
-  color: #1e293b;
+  background: linear-gradient(135deg, #1e293b, #5227FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   border-bottom-color: #dde4ef;
 }
 

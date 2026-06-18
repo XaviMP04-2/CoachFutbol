@@ -23,12 +23,19 @@ const Header = styled.div`
 `;
 
 const Title = styled.h1`
-  color: white;
+  color: var(--text-primary);
   font-size: 1.5rem;
   margin: 0;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+
+  [data-theme="light"] & span.title-text {
+    background: linear-gradient(135deg, #1e293b, #5227FF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 `;
 
 const Actions = styled.div`
@@ -47,10 +54,10 @@ const ActionButton = styled.button<{ $primary?: boolean }>`
   gap: 0.4rem;
   transition: all 0.2s;
   
-  background: ${props => props.$primary 
-    ? 'linear-gradient(45deg, #2ecc71, #27ae60)' 
-    : 'rgba(255,255,255,0.1)'};
-  color: white;
+  background: ${props => props.$primary
+    ? 'linear-gradient(45deg, #2ecc71, #27ae60)'
+    : 'rgba(var(--surface), 0.08)'};
+  color: ${props => props.$primary ? 'white' : 'var(--text-primary)'};
   
   &:hover {
     transform: translateY(-2px);
@@ -126,7 +133,7 @@ const TacticalBoard = () => {
     <Container>
       <Header>
         <Title>
-          🎯 Pizarra Táctica
+          🎯 <span className="title-text">Pizarra Táctica</span>
         </Title>
         
         <Actions>

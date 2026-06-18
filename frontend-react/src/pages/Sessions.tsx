@@ -110,10 +110,10 @@ const Sessions: React.FC = () => {
       {sessions.length === 0 && !showCreate ? (
         <div className="sessions-empty">
           <div className="sessions-empty-icon">📋</div>
-          <h3>Sin sesiones todav\u00EDa</h3>
-          <p>Crea tu primera sesi\u00F3n para organizar tus ejercicios en un plan de entrenamiento.</p>
+          <h3>Sin sesiones todavía</h3>
+          <p>Crea tu primera sesión para organizar tus ejercicios en un plan de entrenamiento.</p>
           <button className="sessions-create-btn" onClick={() => setShowCreate(true)}>
-            + Crear primera sesi\u00F3n
+            + Crear primera sesión
           </button>
         </div>
       ) : (

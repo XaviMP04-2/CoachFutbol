@@ -166,56 +166,74 @@ const CreateExercise: React.FC = () => {
 
             <h4 className="form-group-title">Detalles</h4>
 
-            <label>Objetivos:</label>
-            <ObjectiveSelector 
-              selectedObjectives={formData.objetivos}
-              onChange={(newObjectives) => setFormData(prev => ({ ...prev, objetivos: newObjectives }))}
-            />
-
-            <label htmlFor="duracion">Duración:</label>
-            <input type="text" id="duracion" name="duracion" placeholder="ej: 15 min" value={formData.duracion} onChange={handleChange} />
-
-            <label htmlFor="material">Material necesario:</label>
-            <input type="text" id="material" name="material" placeholder="ej: conos, balones, picas" value={formData.material} onChange={handleChange} />
-
-            <label htmlFor="numeroJugadores">Número de jugadores:</label>
-            <input type="number" id="numeroJugadores" name="numeroJugadores" min="1" step="1" value={formData.numeroJugadores} onChange={handleChange} />
-
-            <label>Etiquetas:</label>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.4rem' }}>
-              {tags.map(t => (
-                <span key={t} style={{ background: 'rgba(243,156,18,0.15)', border: '1px solid rgba(243,156,18,0.35)', borderRadius: '20px', padding: '0.2rem 0.6rem', fontSize: '0.82rem', color: '#f39c12', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                  #{t}
-                  <button type="button" onClick={() => setTags(prev => prev.filter(x => x !== t))} style={{ background: 'none', border: 'none', color: '#f39c12', cursor: 'pointer', padding: 0, lineHeight: 1, fontSize: '0.9rem' }}>✕</button>
-                </span>
-              ))}
-            </div>
-            <input
-              type="text"
-              placeholder="Escribe una etiqueta y pulsa Enter"
-              value={tagInput}
-              onChange={e => setTagInput(e.target.value)}
-              onKeyDown={e => {
-                if ((e.key === 'Enter' || e.key === ',') && tagInput.trim()) {
-                  e.preventDefault();
-                  const t = tagInput.trim().toLowerCase().replace(/\s+/g, '-');
-                  if (!tags.includes(t)) setTags(prev => [...prev, t]);
-                  setTagInput('');
-                }
-              }}
-            />
-
-            <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <input 
-                type="checkbox" 
-                id="isPublic" 
-                checked={isPublic} 
-                onChange={(e) => setIsPublic(e.target.checked)} 
-                style={{ width: 'auto' }}
+            {/* Objetivos — full width */}
+            <div className="form-field-full">
+              <label>Objetivos:</label>
+              <ObjectiveSelector
+                selectedObjectives={formData.objetivos}
+                onChange={(newObjectives) => setFormData(prev => ({ ...prev, objetivos: newObjectives }))}
               />
-              <label htmlFor="isPublic" style={{ marginBottom: 0, cursor: 'pointer' }}>
-                Solicitar publicación (requiere aprobación)
-              </label>
+            </div>
+
+            {/* Duración / Material / Jugadores — 3-col row */}
+            <div className="form-fields-row-3">
+              <div className="form-field-group">
+                <label htmlFor="duracion">Duración:</label>
+                <input type="text" id="duracion" name="duracion" placeholder="ej: 15 min" value={formData.duracion} onChange={handleChange} />
+              </div>
+              <div className="form-field-group">
+                <label htmlFor="material">Material:</label>
+                <input type="text" id="material" name="material" placeholder="ej: conos, balones, picas" value={formData.material} onChange={handleChange} />
+              </div>
+              <div className="form-field-group">
+                <label htmlFor="numeroJugadores">Nº jugadores:</label>
+                <input type="number" id="numeroJugadores" name="numeroJugadores" min="1" step="1" value={formData.numeroJugadores} onChange={handleChange} />
+              </div>
+            </div>
+
+            {/* Etiquetas — full width */}
+            <div className="form-field-full">
+              <label>Etiquetas:</label>
+              {tags.length > 0 && (
+                <div className="form-tags-list">
+                  {tags.map(t => (
+                    <span key={t} className="form-tag-pill">
+                      #{t}
+                      <button type="button" onClick={() => setTags(prev => prev.filter(x => x !== t))} className="form-tag-remove">✕</button>
+                    </span>
+                  ))}
+                </div>
+              )}
+              <input
+                type="text"
+                placeholder="Escribe una etiqueta y pulsa Enter o coma"
+                value={tagInput}
+                onChange={e => setTagInput(e.target.value)}
+                onKeyDown={e => {
+                  if ((e.key === 'Enter' || e.key === ',') && tagInput.trim()) {
+                    e.preventDefault();
+                    const t = tagInput.trim().toLowerCase().replace(/\s+/g, '-');
+                    if (!tags.includes(t)) setTags(prev => [...prev, t]);
+                    setTagInput('');
+                  }
+                }}
+              />
+            </div>
+
+            {/* Solicitar publicación */}
+            <div className="form-publish-row">
+              <input
+                type="checkbox"
+                id="isPublic"
+                checked={isPublic}
+                onChange={(e) => setIsPublic(e.target.checked)}
+              />
+              <div>
+                <label htmlFor="isPublic" className="form-publish-label">
+                  Solicitar publicación
+                </label>
+                <p className="form-publish-hint">Requiere aprobación del administrador para aparecer en la biblioteca pública</p>
+              </div>
             </div>
 
             <button type="submit" disabled={isUploading}>

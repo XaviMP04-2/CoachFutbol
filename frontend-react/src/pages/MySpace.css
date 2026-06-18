@@ -136,6 +136,11 @@
   color: white;
 }
 
+[data-theme="light"] .myspace-content-title {
+  color: #3b1fa8 !important;
+  -webkit-text-fill-color: #3b1fa8;
+}
+
 /* Grid */
 .myspace-grid {
   display: grid;
@@ -188,7 +193,13 @@
 }
 
 /* ── Light mode text fixes ──────────────────────────────── */
-[data-theme="light"] .myspace-title,
+[data-theme="light"] .myspace-title {
+  background: linear-gradient(135deg, #1e293b, #5227FF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 [data-theme="light"] .myspace-card-title,
 [data-theme="light"] .myspace-folder-name {
   -webkit-text-fill-color: initial;

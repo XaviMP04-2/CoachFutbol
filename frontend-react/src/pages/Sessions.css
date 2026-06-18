@@ -257,5 +257,14 @@
 [data-theme="light"] .session-card-footer { color: #94a3b8 !important; }
 [data-theme="light"] .sessions-empty h3  { color: #1e293b !important; }
 [data-theme="light"] .sessions-empty p   { color: #64748b !important; }
-[data-theme="light"] .session-card-badge { color: #475569 !important; background: rgba(0,0,0,0.06) !important; }
-[data-theme="light"] .session-card-badge.accent { color: white !important; }
+[data-theme="light"] .session-card-badge {
+  color: #475569 !important;
+  background: rgba(0,0,0,0.06) !important;
+  border-color: rgba(0,0,0,0.1) !important;
+}
+[data-theme="light"] .session-card-badge.accent {
+  background: #5227FF !important;
+  border-color: #5227FF !important;
+  color: white !important;
+  font-weight: 600 !important;
+}
