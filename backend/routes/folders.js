@@ -35,6 +35,27 @@ router.get('/', auth, async (req, res) => {
   }
 });
 
+// @route   PUT api/folders/:id
+// @desc    Rename a folder
+// @access  Private
+router.put('/:id', auth, async (req, res) => {
+  try {
+    const folder = await Folder.findById(req.params.id);
+    if (!folder) return res.status(404).json({ msg: 'Folder not found' });
+    if (folder.userId.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'Not authorized' });
+    }
+    const { name } = req.body;
+    if (!name || !name.trim()) return res.status(400).json({ msg: 'Name is required' });
+    folder.name = name.trim();
+    await folder.save();
+    res.json(folder);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server Error');
+  }
+});
+
 // @route   DELETE api/folders/:id
 // @desc    Delete folder (and move exercises to root?)
 // @access  Private
