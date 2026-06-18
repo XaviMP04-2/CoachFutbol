@@ -6,6 +6,14 @@ import API_URL from '../config';
 import { useToast } from '../context/ToastContext';
 import './Sessions.css';
 
+const SESSION_TEMPLATES = [
+  { name: 'Calentamiento', description: 'Activación, movilidad y estiramientos dinámicos', icon: '🔥' },
+  { name: 'Sesión técnica', description: 'Trabajo con balón: control, pase, regate', icon: '⚽' },
+  { name: 'Sesión táctica', description: 'Posicionamiento, presión y estrategia colectiva', icon: '🧠' },
+  { name: 'Preparación física', description: 'Resistencia, fuerza, velocidad y agilidad', icon: '💪' },
+  { name: 'Sesión completa', description: 'Calentamiento + ejercicios + vuelta a la calma', icon: '📋' },
+];
+
 const Sessions: React.FC = () => {
   const { token } = useAuth();
   const { showToast } = useToast();
@@ -15,13 +23,29 @@ const Sessions: React.FC = () => {
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState('');
   const [newDesc, setNewDesc] = useState('');
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [showTemplates, setShowTemplates] = useState(false);
 
   useEffect(() => {
     fetch(`${API_URL}/api/sessions`, { headers: { 'x-auth-token': token || '' } })
       .then(r => r.json())
-      .then(data => { setSessions(data); setLoading(false); })
+      .then(data => { setSessions(Array.isArray(data) ? data : []); setLoading(false); })
       .catch(() => setLoading(false));
   }, [token]);
+
+  const openCreate = () => {
+    setShowCreate(true);
+    setShowTemplates(false);
+    setNewName('');
+    setNewDesc('');
+  };
+
+  const applyTemplate = (t: typeof SESSION_TEMPLATES[0]) => {
+    setNewName(t.name);
+    setNewDesc(t.description);
+    setShowTemplates(false);
+    setShowCreate(true);
+  };
 
   const createSession = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,8 +62,6 @@ const Sessions: React.FC = () => {
       navigate(`/sesiones/${created._id}`);
     }
   };
-
-  const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
 
   const deleteSession = async (id: string, e: React.MouseEvent) => {
     e.preventDefault();
@@ -58,6 +80,10 @@ const Sessions: React.FC = () => {
   const totalMinutes = (s: TrainingSession) =>
     s.exercises.reduce((acc, e) => acc + (e.duration || 0), 0);
 
+  const totalExercisesAll = sessions.reduce((acc, s) => acc + s.exercises.length, 0);
+  const totalMinutesAll = sessions.reduce((acc, s) => acc + totalMinutes(s), 0);
+  const lastSession = sessions[0];
+
   if (loading) return (
     <div className="standard-page-container" style={{ color: 'rgba(255,255,255,0.5)', paddingTop: '4rem', textAlign: 'center' }}>
       Cargando sesiones...
@@ -66,22 +92,77 @@ const Sessions: React.FC = () => {
 
   return (
     <div className="standard-page-container">
+
       <div className="sessions-header">
         <div>
           <h1 className="sessions-title">Sesiones de Entrenamiento</h1>
           <p className="sessions-subtitle">Organiza tus ejercicios en sesiones estructuradas</p>
         </div>
-        <button className="sessions-create-btn" onClick={() => setShowCreate(!showCreate)}>
-          + Nueva Sesión
-        </button>
+        <div className="sessions-header-actions">
+          <button className="sessions-template-btn" onClick={() => { setShowTemplates(!showTemplates); setShowCreate(false); }}>
+            📋 Plantillas
+          </button>
+          <button className="sessions-create-btn" onClick={openCreate}>
+            + Nueva Sesión
+          </button>
+        </div>
       </div>
+
+      {sessions.length > 0 && (
+        <div className="sessions-stats-bar">
+          <div className="sessions-stat-item">
+            <span className="sessions-stat-value">{sessions.length}</span>
+            <span className="sessions-stat-label">{sessions.length === 1 ? 'sesión' : 'sesiones'}</span>
+          </div>
+          <div className="sessions-stat-divider" />
+          <div className="sessions-stat-item">
+            <span className="sessions-stat-value">{totalExercisesAll}</span>
+            <span className="sessions-stat-label">ejercicios en total</span>
+          </div>
+          {totalMinutesAll > 0 && (
+            <>
+              <div className="sessions-stat-divider" />
+              <div className="sessions-stat-item">
+                <span className="sessions-stat-value">{totalMinutesAll}</span>
+                <span className="sessions-stat-label">minutos planificados</span>
+              </div>
+            </>
+          )}
+          {lastSession && (
+            <>
+              <div className="sessions-stat-divider" />
+              <div className="sessions-stat-item">
+                <span className="sessions-stat-label">Última:</span>
+                <span className="sessions-stat-value sessions-stat-date">
+                  {new Date(lastSession.createdAt).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })}
+                </span>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+
+      {showTemplates && (
+        <div className="sessions-templates">
+          <p className="sessions-templates-label">Elige una plantilla para empezar:</p>
+          <div className="sessions-templates-grid">
+            {SESSION_TEMPLATES.map(t => (
+              <button key={t.name} className="sessions-template-card" onClick={() => applyTemplate(t)}>
+                <span className="sessions-template-icon">{t.icon}</span>
+                <span className="sessions-template-name">{t.name}</span>
+                <span className="sessions-template-desc">{t.description}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {showCreate && (
         <div className="sessions-create-form">
           <form onSubmit={createSession} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             <input
               type="text"
-              placeholder="Nombre de la sesión *"
+              placeholder="Ej: Martes — Sesión técnica sub-16"
               value={newName}
               onChange={e => setNewName(e.target.value)}
               className="sessions-input"
@@ -107,14 +188,19 @@ const Sessions: React.FC = () => {
         </div>
       )}
 
-      {sessions.length === 0 && !showCreate ? (
+      {sessions.length === 0 && !showCreate && !showTemplates ? (
         <div className="sessions-empty">
           <div className="sessions-empty-icon">📋</div>
           <h3>Sin sesiones todavía</h3>
           <p>Crea tu primera sesión para organizar tus ejercicios en un plan de entrenamiento.</p>
-          <button className="sessions-create-btn" onClick={() => setShowCreate(true)}>
-            + Crear primera sesión
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <button className="sessions-create-btn" onClick={() => setShowTemplates(true)}>
+              📋 Usar plantilla
+            </button>
+            <button className="sessions-create-btn" onClick={openCreate} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.15)' }}>
+              + Crear en blanco
+            </button>
+          </div>
         </div>
       ) : (
         <div className="sessions-grid">
@@ -127,19 +213,30 @@ const Sessions: React.FC = () => {
                 <div className="session-card-body">
                   <div className="session-card-header">
                     <h3 className="session-card-title">{s.name}</h3>
-                    <button className="session-card-delete" onClick={e => deleteSession(s._id, e)} title={confirmDelete === s._id ? "Confirmar eliminación" : "Eliminar"} style={{ background: confirmDelete === s._id ? "rgba(231,76,60,0.3)" : undefined, color: confirmDelete === s._id ? "#e74c3c" : undefined }}>{confirmDelete === s._id ? "¿Confirmar?" : "🗑"}</button>
+                    <button
+                      className="session-card-delete"
+                      onClick={e => deleteSession(s._id, e)}
+                      title={confirmDelete === s._id ? 'Confirmar eliminación' : 'Eliminar'}
+                      style={{
+                        background: confirmDelete === s._id ? 'rgba(231,76,60,0.3)' : undefined,
+                        color: confirmDelete === s._id ? '#e74c3c' : undefined
+                      }}
+                    >
+                      {confirmDelete === s._id ? '¿Seguro?' : '🗑'}
+                    </button>
                   </div>
                   {s.description && <p className="session-card-desc">{s.description}</p>}
                   <div className="session-card-meta">
                     <span className="session-card-badge accent">
                       📝 {s.exercises.length} {s.exercises.length === 1 ? 'ejercicio' : 'ejercicios'}
                     </span>
-                    {mins > 0 && (
-                      <span className="session-card-badge">⏱ {mins} min</span>
-                    )}
+                    {mins > 0 && <span className="session-card-badge">⏱ {mins} min</span>}
                   </div>
                 </div>
-                <div className="session-card-footer">{date}</div>
+                <div className="session-card-footer">
+                  <span>{date}</span>
+                  <span className="session-card-footer-arrow">Ver sesión →</span>
+                </div>
               </Link>
             );
           })}

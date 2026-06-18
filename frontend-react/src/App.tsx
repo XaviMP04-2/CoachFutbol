@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Layout from './components/Layout';
 import ProtectedRoute from './components/ProtectedRoute';
 import ExerciseList from './pages/ExerciseList';
@@ -15,9 +15,16 @@ import Sessions from './pages/Sessions';
 import SessionDetail from './pages/SessionDetail';
 import PublicSession from './pages/PublicSession';
 import Profile from './pages/Profile';
-import { AuthProvider } from './context/AuthContext';
+import Dashboard from './pages/Dashboard';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { ThemeProvider } from './context/ThemeContext';
+
+// Redirige / al dashboard si está autenticado, si no muestra la landing
+const HomeRoute = () => {
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Navigate to="/dashboard" replace /> : <IntroPage />;
+};
 
 function App() {
   return (
@@ -26,7 +33,7 @@ function App() {
       <ToastProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<IntroPage />} />
+            <Route path="/" element={<HomeRoute />} />
             <Route element={<Layout />}>
               {/* Rutas publicas */}
               <Route path="/ejercicios" element={<ExerciseList />} />
@@ -38,6 +45,7 @@ function App() {
 
               {/* Rutas privadas */}
               <Route element={<ProtectedRoute />}>
+                <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/crear" element={<CreateExercise />} />
                 <Route path="/my-space" element={<MySpace />} />
                 <Route path="/sesiones" element={<Sessions />} />

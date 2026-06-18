@@ -140,7 +140,189 @@
 [data-theme="light"] .session-exercise-item {
   background: #ffffff;
   border-color: #dde4ef;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.0
+/* ── Inline name edit ─────────────────────────────────── */
+.session-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
 }
-[data-theme="light"] .session-exercise-title { color: #1e293b !important; }
-[data-theme="light"] .session-exercise-meta  { color: #64748b !important; }
+
+.session-detail-title {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 8px;
+  padding: 0.1rem 0.3rem;
+  transition: background 0.15s;
+}
+
+.session-detail-title:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.session-title-edit-hint {
+  font-size: 0.9rem;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.session-detail-title:hover .session-title-edit-hint {
+  opacity: 0.6;
+}
+
+.session-name-input {
+  font-size: 2rem;
+  font-weight: 700;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid var(--accent-primary, #5227FF);
+  color: var(--text-primary);
+  padding: 0.1rem 0.3rem;
+  width: 100%;
+  font-family: inherit;
+  outline: none;
+}
+
+/* ── PDF button ───────────────────────────────────────── */
+.session-pdf-btn {
+  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+  border-color: transparent !important;
+  color: white !important;
+}
+
+/* ── Drag & drop ──────────────────────────────────────── */
+.session-exercise-drag-handle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.5rem;
+  color: var(--text-muted);
+  font-size: 1rem;
+  cursor: grab;
+  border-radius: 6px;
+  user-select: none;
+  transition: background 0.15s, color 0.15s;
+}
+
+.session-exercise-drag-handle:hover {
+  background: rgba(82,39,255,0.1);
+  color: var(--accent-primary, #5227FF);
+}
+
+.session-exercise-drag-handle:active {
+  cursor: grabbing;
+}
+
+.session-exercise-order {
+  font-size: 0.72rem;
+  font-weight: 700;
+  opacity: 0.5;
+}
+
+.session-exercise-item {
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.session-exercise-item.dragging {
+  opacity: 0.4;
+  transform: scale(0.97);
+}
+
+.session-exercise-item.drag-over {
+  border-top: 2px solid var(--accent-primary, #5227FF);
+  padding-top: 2px;
+}
+
+/* ── Drag hint ────────────────────────────────────────── */
+.session-drag-hint {
+  font-size: 0.78rem !important;
+  color: var(--text-muted) !important;
+  opacity: 0.7;
+}
+
+/* ── Print styles ─────────────────────────────────────── */
+.print-only { display: none; }
+
+@media print {
+  .no-print { display: none !important; }
+  .print-only { display: block !important; }
+
+  body, .app-container, .content-main, .contenido, .standard-page-container {
+    background: white !important;
+    color: black !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .session-print-header {
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+  }
+
+  .session-print-header h1 {
+    font-size: 1.8rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .session-print-header p {
+    color: #555;
+    margin: 0.2rem 0;
+    font-size: 0.9rem;
+  }
+
+  .session-exercises-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    page-break-inside: avoid;
+  }
+
+  .session-exercise-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .session-exercise-duration,
+  .session-exercise-notes {
+    font-size: 0.8rem;
+    color: #555;
+    margin-top: 0.3rem;
+  }
+
+  /* Force card content to print-friendly */
+  .exercise-card-premium {
+    background: white !important;
+    border: 1px solid #ddd !important;
+    box-shadow: none !important;
+    color: black !important;
+  }
+
+  .card-title, .card-desc, .card-stats {
+    color: black !important;
+    -webkit-text-fill-color: black !important;
+  }
+
+  .card-image-container {
+    max-height: 120px;
+  }
+}
+
+/* ── Light mode extra ─────────────────────────────────── */
+[data-theme="light"] .session-detail-title:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+[data-theme="light"] .session-drag-hint {
+  color: #94a3b8 !important;
+}
+
+[data-theme="light"] .session-exercise-drag-handle {
+  color: #94a3b8;
+}

@@ -59,6 +59,10 @@ const Layout = () => {
 
             {isAuthenticated && (
               <>
+                <Link to="/dashboard" className={`nav-link ${isActive('/dashboard')}`}>
+                  <span className="nav-icon">🏠</span>
+                  Inicio
+                </Link>
                 <Link to="/my-space" className={`nav-link ${isActive('/my-space')}`}>
                   <span className="nav-icon">🚀</span>
                   Mi Espacio
