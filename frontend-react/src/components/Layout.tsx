@@ -8,6 +8,7 @@ const Layout = () => {
   const location = useLocation();
   const { isAuthenticated, logout, user } = useAuth();
   const [cmdOpen, setCmdOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // Spotlight cursor effect
   useEffect(() => {
@@ -19,6 +20,7 @@ const Layout = () => {
     return () => window.removeEventListener('mousemove', onMove);
   }, []);
 
+  // Ctrl+K
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -29,6 +31,17 @@ const Layout = () => {
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, []);
+
+  // Close mobile nav on route change
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [location]);
+
+  // Prevent body scroll when mobile nav open
+  useEffect(() => {
+    document.body.style.overflow = mobileNavOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [mobileNavOpen]);
 
   const isActive = (path: string) => location.pathname === path ? 'active' : '';
 
@@ -43,63 +56,42 @@ const Layout = () => {
             <span className="brand-text">COACHFUTBOL</span>
           </Link>
 
+          {/* Desktop nav */}
           <nav className="main-nav">
             <Link to="/ejercicios" className={`nav-link ${isActive('/ejercicios')}`}>
-              <span className="nav-icon">⚽</span>
-              Ejercicios
+              <span className="nav-icon">⚽</span>Ejercicios
             </Link>
             <Link to="/pizarra" className={`nav-link ${isActive('/pizarra')}`}>
-              <span className="nav-icon">🎯</span>
-              Pizarra
+              <span className="nav-icon">🎯</span>Pizarra
             </Link>
             <Link to="/crear" className={`nav-link ${isActive('/crear')}`}>
-              <span className="nav-icon">✨</span>
-              Crear
+              <span className="nav-icon">✨</span>Crear
             </Link>
-
             {isAuthenticated && (
               <>
                 <Link to="/dashboard" className={`nav-link ${isActive('/dashboard')}`}>
-                  <span className="nav-icon">🏠</span>
-                  Inicio
+                  <span className="nav-icon">🏠</span>Inicio
                 </Link>
                 <Link to="/my-space" className={`nav-link ${isActive('/my-space')}`}>
-                  <span className="nav-icon">🚀</span>
-                  Mi Espacio
+                  <span className="nav-icon">🚀</span>Mi Espacio
                 </Link>
                 <Link to="/sesiones" className={`nav-link ${isActive('/sesiones')}`}>
-                  <span className="nav-icon">📋</span>
-                  Sesiones
+                  <span className="nav-icon">📋</span>Sesiones
                 </Link>
                 {user?.isAdmin && (
                   <Link to="/admin" className={`nav-link ${isActive('/admin')}`}>
-                    <span className="nav-icon">🛡️</span>
-                    Admin
+                    <span className="nav-icon">🛡️</span>Admin
                   </Link>
                 )}
               </>
             )}
           </nav>
 
+          {/* Desktop auth */}
           <div className="header-actions">
-            <button
-              onClick={() => setCmdOpen(true)}
-              style={{
-                display:'flex', alignItems:'center', gap:'0.5rem',
-                background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)',
-                borderRadius:'8px', padding:'0.45rem 0.85rem',
-                color:'rgba(255,255,255,0.5)', cursor:'pointer', fontSize:'0.82rem',
-                transition:'all 0.2s'
-              }}
-              title="Buscar ejercicios (Ctrl+K)"
-            >
-              🔍 <span style={{display:'flex',alignItems:'center',gap:'0.3rem'}}>
-                <kbd style={{background:'rgba(255,255,255,0.07)',border:'1px solid rgba(255,255,255,0.12)',borderRadius:'4px',padding:'0.1rem 0.35rem',fontSize:'0.7rem'}}>⌘K</kbd>
-              </span>
-            </button>
             {isAuthenticated ? (
               <>
-                <span style={{ color: 'white', fontWeight: 500 }}>Hola, {user?.username}</span>
+                <span className="header-user-greeting">Hola, {user?.username}</span>
                 <button onClick={logout} className="nav-button">Salir</button>
                 <Link to="/perfil" className="profile-btn-premium">
                   <div className="avatar-placeholder">
@@ -110,14 +102,85 @@ const Layout = () => {
             ) : (
               <>
                 <Link to="/login" className="nav-button">Entrar</Link>
-                <Link to="/register" className="cta-button" style={{ padding: '0.6rem 1.2rem', fontSize: '0.9rem' }}>
-                  Registrarse
-                </Link>
+                <Link to="/register" className="cta-button">Registrarse</Link>
               </>
             )}
           </div>
+
+          {/* Mobile: profile/avatar + hamburger */}
+          <div className="mobile-header-right">
+            {isAuthenticated && (
+              <Link to="/perfil" className="profile-btn-premium">
+                <div className="avatar-placeholder">
+                  {user?.username?.charAt(0).toUpperCase()}
+                </div>
+              </Link>
+            )}
+            <button
+              className={`mobile-hamburger${mobileNavOpen ? ' open' : ''}`}
+              onClick={() => setMobileNavOpen(o => !o)}
+              aria-label="Menú"
+            >
+              <span /><span /><span />
+            </button>
+          </div>
         </div>
       </header>
+
+      {/* Mobile nav overlay */}
+      {mobileNavOpen && (
+        <div className="mobile-nav-overlay" onClick={() => setMobileNavOpen(false)} />
+      )}
+
+      {/* Mobile nav panel */}
+      <div className={`mobile-nav-panel${mobileNavOpen ? ' open' : ''}`}>
+        <div className="mobile-nav-links">
+          <Link to="/ejercicios" className={`mobile-nav-link ${isActive('/ejercicios')}`}>
+            <span>⚽</span>Ejercicios
+          </Link>
+          <Link to="/pizarra" className={`mobile-nav-link ${isActive('/pizarra')}`}>
+            <span>🎯</span>Pizarra
+          </Link>
+          <Link to="/crear" className={`mobile-nav-link ${isActive('/crear')}`}>
+            <span>✨</span>Crear
+          </Link>
+          {isAuthenticated ? (
+            <>
+              <Link to="/dashboard" className={`mobile-nav-link ${isActive('/dashboard')}`}>
+                <span>🏠</span>Inicio
+              </Link>
+              <Link to="/my-space" className={`mobile-nav-link ${isActive('/my-space')}`}>
+                <span>🚀</span>Mi Espacio
+              </Link>
+              <Link to="/sesiones" className={`mobile-nav-link ${isActive('/sesiones')}`}>
+                <span>📋</span>Sesiones
+              </Link>
+              {user?.isAdmin && (
+                <Link to="/admin" className={`mobile-nav-link ${isActive('/admin')}`}>
+                  <span>🛡️</span>Admin
+                </Link>
+              )}
+              <div className="mobile-nav-divider" />
+              <div className="mobile-nav-user">
+                <span className="mobile-nav-username">@{user?.username}</span>
+                <button onClick={() => { logout(); setMobileNavOpen(false); }} className="mobile-nav-logout">
+                  Cerrar sesión
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="mobile-nav-divider" />
+              <Link to="/login" className="mobile-nav-link">
+                <span>🔑</span>Entrar
+              </Link>
+              <Link to="/register" className="mobile-nav-cta">
+                Registrarse
+              </Link>
+            </>
+          )}
+        </div>
+      </div>
 
       <CommandPalette open={cmdOpen} onClose={() => setCmdOpen(false)} />
       <main className="content-main">

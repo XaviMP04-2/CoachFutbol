@@ -259,7 +259,7 @@ const ExerciseList: React.FC = () => {
             <GrumpySearch
               value={searchTerm}
               onChange={setSearchTerm}
-              placeholder='Buscar ejercicios por título, autor... (presiona "/" para buscar)'
+              placeholder='Buscar ejercicios por título, autor... (presiona "Ctrl + K" para buscar)'
             />
           </div>
 

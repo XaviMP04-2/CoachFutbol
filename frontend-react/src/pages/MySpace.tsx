@@ -174,13 +174,13 @@ const MySpace = () => {
       if (!searchQuery.trim()) return true;
       const q = searchQuery.toLowerCase();
       return (
-        ex.title?.toLowerCase().includes(q) ||
+        ex.titulo?.toLowerCase().includes(q) ||
         ex.tags?.some(t => t.toLowerCase().includes(q)) ||
-        ex.description?.toLowerCase().includes(q)
+        ex.descripcion?.toLowerCase().includes(q)
       );
     })
     .sort((a, b) => {
-      if (sortBy === 'name') return (a.title || '').localeCompare(b.title || '');
+      if (sortBy === 'name') return (a.titulo || '').localeCompare(b.titulo || '');
       if (sortBy === 'difficulty') {
         const da = DIFFICULTY_ORDER[getDifficulty(a)] ?? 99;
         const db = DIFFICULTY_ORDER[getDifficulty(b)] ?? 99;
