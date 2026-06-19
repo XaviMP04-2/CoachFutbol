@@ -810,9 +810,9 @@ body {
 }
 
 /* ================================================================
-   MOBILE STYLES (max-width: 768px)
+   MOBILE STYLES (max-width: 900px)
    ================================================================ */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   /* Container: Column layout */
   .canvas-editor-container {
     flex-direction: column;
@@ -853,25 +853,26 @@ body {
     max-height: 70vh;
   }
   
-  /* Action Buttons: Convert from sidebar to floating buttons */
+  /* Action Buttons: floating bottom-right to avoid overlapping navbar */
   .canvas-action-buttons {
     position: fixed;
-    top: 0.5rem;
-    right: 0.5rem;
+    bottom: 5.5rem;
+    right: 0.75rem;
+    top: auto;
     width: auto;
     min-width: unset;
     height: auto;
     background: transparent;
-    flex-direction: row;
+    flex-direction: column;
     padding: 0;
     gap: 0.5rem;
     box-shadow: none;
   }
-  
+
   .canvas-action-buttons button {
-    width: 45px !important;
-    height: 45px !important;
-    font-size: 1.2rem !important;
+    width: 48px !important;
+    height: 48px !important;
+    font-size: 1.3rem !important;
   }
   
   /* Tool buttons smaller on mobile */
@@ -909,8 +910,8 @@ body {
    NAVBAR MOBILE
    ================================================================ */
 
-/* Hide desktop nav + auth on mobile */
-@media (max-width: 768px) {
+/* Hide desktop nav + auth on mobile/tablet portrait+landscape */
+@media (max-width: 900px) {
   .main-nav,
   .header-actions {
     display: none;
